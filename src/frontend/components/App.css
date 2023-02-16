@@ -1,0 +1,174 @@
+@import url("https://fonts.googleapis.com/css?family=Press+Start+2P");
+@import url("https://fonts.googleapis.com/css?family=VT323");
+
+body {
+  margin: 0;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  monospace;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  z-index:  -1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("../assets/sky-clouds.gif");
+  /*<div class="tenor-gif-embed" data-postid="17122659" data-share-method="host" data-aspect-ratio="1.78771" data-width="100%"><a href="https://tenor.com/view/sky-clouds-white-sun-light-sun-set-gif-17122659">Sky Clouds GIF</a>from <a href="https://tenor.com/search/sky-gifs">Sky GIFs</a></div> <script type="text/javascript" async src="https://tenor.com/embed.js"></script> */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: 40% 40%;
+}
+
+.App, .AppOther2, .AppOther1 {
+  text-align: center;
+  font-family: "Press Start 2P", "VT323";
+  color: black;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.overlay {
+  opacity: 0.25;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  position: fixed;
+}
+
+.moving-background{
+  z-index:  -1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /*background-image: url("./assets/sky-clouds.gif");*/
+  background-image: url("https://tenor.com/view/sky-clouds-white-sun-light-sun-set-gif-17122659");
+  /*<div class="tenor-gif-embed" data-postid="17122659" data-share-method="host" data-aspect-ratio="1.78771" data-width="100%"><a href="https://tenor.com/view/sky-clouds-white-sun-light-sun-set-gif-17122659">Sky Clouds GIF</a>from <a href="https://tenor.com/search/sky-gifs">Sky GIFs</a></div> <script type="text/javascript" async src="https://tenor.com/embed.js"></script> */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: 40% 40%;
+
+}
+
+/* ------------------------------------------------------ */
+/* -- NAVIGATION -- */
+
+nav {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+}
+
+.nav__brand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.nav__brand img {
+  max-width: 125px;
+  height: auto;
+}
+
+.nav__brand h1 {
+  color: var(--clr-blue);
+  font-size: 2.5em;
+  font-weight: 800;
+}
+
+.nav__links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  list-style: none;
+}
+
+.nav__links li {
+  margin: 0 15px;
+}
+
+.nav__links li a {
+  text-decoration: none;
+  color: var(--clr-black);
+}
+
+.nav__links li a:hover {
+  color: var(--clr-blue);
+}
+
+.nav__connect {
+  width: 175px;
+  height: 50px;
+  margin: 0 auto;
+
+  background-color: var(--clr-blue);
+  color: var(--clr-white);
+
+  border: none;
+  border-radius: 4px;
+
+  font-family: "Arial";
+  font-size: 1.10em;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: all 250ms ease;
+}
+
+.nav__connect:hover {
+  background-color: var(--clr-blue-2);
+}
+
+
+header {
+  /*background-image: url("./assets/super_bee.jpeg");*/
+  background-position: center;
+  background-size: 25px;
+  min-height: 30vh;
+  position: relative;
+}
+
+
+.header__title {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  color: var(--clr-white);
+  font-size: 2em;
+
+  width: 100%;
+  text-align: center;
+}
+
+.header__search {
+  padding: 5px;
+  min-width: 40%;
+
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.header__search::placeholder {
+  font-family: "Open Sans";
+  font-size: 1.25em;
+  font-weight: 600;
+}
+
+.header__search:hover {
+  outline: 1px solid var(--clr-blue);
+}
