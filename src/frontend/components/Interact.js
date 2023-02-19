@@ -113,13 +113,12 @@ async function handleMint(uri) {
 
 export const listNFT = async(id) => {
 
-   const provider = new ethers.providers.Web3Provider(window.ethereum);
-    // sth that signs the transaction 
-    const signer = provider.getSigner();
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const signer = provider.getSigner();
 
-    const nft = new ethers.Contract(physicalNFTAddress,phyiscalNFT.abi,signer)
+  const nft = new ethers.Contract(physicalNFTAddress,phyiscalNFT.abi,signer)
 
-    const escrow = new ethers.Contract(phygitalEscrowAddress, phygitalEscrow.abi, signer)
+  const escrow = new ethers.Contract(phygitalEscrowAddress, phygitalEscrow.abi, signer)
 
   // approve escrow contract      
   const response2 = await(await nft.approve(phygitalEscrowAddress, id)).wait()
@@ -132,3 +131,26 @@ export const listNFT = async(id) => {
   await(await escrow.ListNFT(nft.address, id, listingPrice)).wait()
   console.log('Done listing')
   }
+
+export const cancelNFT = async() => {
+
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const signer = provider.getSigner();
+  const escrow = new ethers.Contract(phygitalEscrowAddress, phygitalEscrow.abi, signer)
+  // return ownership of NFT 
+  await(await escrow.reverseNftTransfer()).wait()
+  console.log('Done Reversing')
+}
+
+export const buyNFT = async(id, price) => {
+
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const signer = provider.getSigner();
+  const escrow = new ethers.Contract(phygitalEscrowAddress, phygitalEscrow.abi, signer)
+  // deposit eth
+  const price = ethers.utils.parseEther(price.toString())
+  await(await escrow.depositETH(id, price)).wait()
+  console.log('Done Buying')
+
+
+}
