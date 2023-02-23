@@ -6,7 +6,8 @@ import {
   import Navbar from './NavBar.js';
   import Home from './Home.js';
   import Mint from './Mint.js';
-  import SellBuy from './SellBuy.js';
+  import Sell from './Sell.js';
+  import Buy from './Buy.js';
   import { useState } from 'react';
   
   import './App.css';
@@ -29,8 +30,11 @@ import {
                 <Route path="/Mint" element={
                   <Mint accounts={accounts} setAccount={setAccounts} />
                 } />
-                <Route path="/SellBuy" element={
-                  <SellBuy accounts={accounts} setAccount={setAccounts} />
+                <Route path="/Sell" element={
+                  <Sell accounts={accounts} setAccount={setAccounts} />
+                } />
+                <Route path="/Buy" element={
+                  <Buy accounts={accounts} setAccount={setAccounts} />
                 } />
               </Routes>
 

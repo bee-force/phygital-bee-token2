@@ -22,16 +22,17 @@ const NavBar = ({ accounts, setAccounts }) => {
 
     return (
     <nav>
-        <div className='nav__links'>  
-            <Nav.Link as={Link} to="/">Home</Nav.Link>
-            <Nav.Link as={Link} to="/Mint">Mint</Nav.Link>
-            <Nav.Link as={Link} to="/SellBuy">SellBuy </Nav.Link>
-        </div> 
+        <div className='nav__links'>
+           <div><Nav.Link as={Link} to="/">-Home-</Nav.Link></div>
+            <div><Nav.Link as={Link} to="/Mint">Mint-</Nav.Link></div>
+            <div><Nav.Link as={Link} to="/Sell"> Sell-</Nav.Link></div>
+            <div><Nav.Link as={Link} to="/Buy">Buy-</Nav.Link></div>
+        </div>    
         <div className='nav__brand'>
                 <img src={super_bee} alt="Super Bee" />
                 <h1>BeeTokens</h1>
         </div>
-
+        <div className ='nav__links'>
             {/*Connect if we are not connected we will press this buttton which will execute the function*/}
             {isConnected ?(
                 <p>Connected</p>
@@ -42,7 +43,8 @@ const NavBar = ({ accounts, setAccounts }) => {
                     onClick={connectAccount}>Connect to Wallet
                 </button>
             )}
-    </nav> 
+        </div>    
+    </nav>  
     )
 };
 
