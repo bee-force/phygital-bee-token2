@@ -16,8 +16,7 @@ contract PhygitalEscrow is ReentrancyGuard {
     address payable public immutable feeAccount; // the account that receives fees
     uint public immutable feePercent = 5; // the fee percentage on sales 
     uint public itemCount; 
-
-    // I think this was not saved 
+    
     address payable public seller;
     address payable public buyer;
     IERC721 nft;
@@ -41,7 +40,7 @@ contract PhygitalEscrow is ReentrancyGuard {
     // itemId -> Item
     mapping(uint => Item) public items;
 
- 
+   // when & how do we use this? check marketplace 
     event Offered(
         uint itemId,
         address indexed nft,
@@ -132,11 +131,8 @@ contract PhygitalEscrow is ReentrancyGuard {
     }
 
     // this cancels the transferal, rather reverts its & the seller is owner once again 
-    function reverseNftTransfer()
-        public
-        inContractState(ContractState.nftDeposited)
-        onlySeller
-    {
+    function reverseNftTransfer(uint _tokenID) public inContractState(ContractState.nftDeposited) onlySeller {
+        tokenID = _tokenID;
         IERC721(nft).safeTransferFrom(address(this), msg.sender, tokenID);
         contractState = ContractState.cancelNFT;
     }
@@ -166,11 +162,8 @@ contract PhygitalEscrow is ReentrancyGuard {
     }*/
 
      // both seller and buyer can cancel before delivery (there is already ETH in contract)
-    function cancelBeforeDelivery(bool _state)
-        public
-        inContractState(ContractState.ethDeposited)
-        payable
-        BuyerOrSeller
+     // why do we need to pass the state?
+    function cancelBeforeDelivery(bool _state, uint _itemId) public inContractState(ContractState.ethDeposited) payable BuyerOrSeller
     {
         if (msg.sender == seller){
             sellerCancel = _state;
@@ -183,46 +176,81 @@ contract PhygitalEscrow is ReentrancyGuard {
         if (sellerCancel == true && buyerCancel == true){
             IERC721(nft).safeTransferFrom(address(this), seller, tokenID);
             buyer.transfer(address(this).balance);
+            
+            Item storage item = items[_itemId];
+            // update item to sold
+            item.sold = false;
+            
             contractState = ContractState.canceledBeforeDelivery;     
         }
+
     }
 
-    function depositETH()
-        public
-        payable
-        inContractState(ContractState.nftDeposited)
-    {
+    // for some reason only an approved account can buy - if I call it via escrow... change it function like below... 
+    function depositETH(uint _itemId) public payable inContractState(ContractState.nftDeposited)
+    {   uint _totalPrice = getTotalPrice(_itemId);
         buyer = payable(msg.sender);
+        // later check if amount is correct & if token is even buyable?
+
+        Item storage item = items[_itemId];
+        // update item to sold
+        item.sold = true;
+
+        require(msg.value >= _totalPrice, "not enough ether to cover item price and market fee");
+
+        // emit Bought event
+        emit Bought(
+            _itemId,
+            address(item.nft),
+            item.tokenId,
+            item.price,
+            item.seller,
+            msg.sender
+        );
+
         contractState = ContractState.ethDeposited;
     }
+
+   // function depositEarnest(uint256 _nftID) public payable onlyBuyer(_nftID) {
+   //     require(msg.value >= escrowAmount[_nftID]);
+   // }
     
        // how does the seller know if ETH was deposited? (its visible on etherscan)
 
     // only the seller address can initiate this step 
-    function initiateDelivery()
-        public
-        inContractState(ContractState.ethDeposited)
-        onlySeller
-        noDispute
+    function initiateDelivery() public inContractState(ContractState.ethDeposited) onlySeller noDispute
     {
+        // maybe return something in the future? 
         contractState = ContractState.deliveryInitiated;
     }  
 
      // only buyer can confirm this step  (in future type in NFC tag number?)
-    // why do we need to pass in ETH for this function?
-    function confirmDelivery() 
-        public
-        payable 
-        inContractState(ContractState.deliveryInitiated)
-        onlyBuyer
+    // why do we need to pass in ETH for this function??? does not make sense 
+    // maybe because balance is never saved anywhere?
+    // this function should not be of type payable 
+    function confirmDelivery() public payable inContractState(ContractState.deliveryInitiated)onlyBuyer
     {
-        // Token will be transferred to buyer address 
+        // Token will be transferred to buyer address & when is eth being passed to seller? :D 
         IERC721(nft).safeTransferFrom(address(this), buyer, tokenID);
+        // is the seller being paid here?
         seller.transfer(address(this).balance);
         contractState = ContractState.delivered;
     }
 
-
+    /* change above function to somethin like this
+    // -> Require funds to be correct amount
+    // -> Transfer NFT to buyer
+    // -> Transfer Funds to Seller
+    function finalizeSale(uint256 _nftID) public {
+        require(address(this).balance >= purchasePrice[_nftID]);
+        //isListed[_nftID] = false;
+        (bool success, ) = payable(seller).call{value: address(this).balance}(
+            ""
+        );
+        require(success);
+        IERC721(nftAddress).transferFrom(address(this), buyer[_nftID], _nftID);
+    }*/
+    
     function getTotalPrice(uint _itemId) view public returns(uint){
         return((items[_itemId].price*(100 + feePercent))/100);
     }

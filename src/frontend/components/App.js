@@ -8,6 +8,7 @@ import {
   import Mint from './Mint.js';
   import Sell from './Sell.js';
   import Buy from './Buy.js';
+  import NFCChipValidation from './NFCChipValidation.js'
   import { useState } from 'react';
   
   import './App.css';
@@ -36,8 +37,8 @@ import {
                 <Route path="/Buy" element={
                   <Buy accounts={accounts} setAccount={setAccounts} />
                 } />
+                 <Route path="/NFCChipValidation" element={<NFCChipValidation />}/> 
               </Routes>
-
               </div>
             </div>
       </BrowserRouter>

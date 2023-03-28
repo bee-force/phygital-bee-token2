@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { listNFT, cancelNFT } from "./Interact";
+import { listNFT, cancelNFT, cancelNFTSale } from "./Interact";
 import * as Scroll from 'react-scroll';
 
 const Sell = ({ accounts, setAccounts }) => {
@@ -20,14 +20,19 @@ const Sell = ({ accounts, setAccounts }) => {
       setStatus(status);
   };
 
+  const onCancelPressed2 = async () => { //transfer to escrow or marketplace?
+    const { status } = await cancelNFTSale(ID);
+    setStatus(status);
+};
+
     return (
 <div class="container">
 <h2>Physical NFT</h2>
-<p><br></br><br></br>Sell your very own Phyigital BeeToken!</p>
+<p><br></br>Sell your very own Phygital BeeToken!</p>
 <div class="row">
   <div class="col-sm">
     
-    <p><br></br><br></br>Please fill in your NFT's ID. Then press "List/Sell."<br></br></p>
+    <p><br></br>Please fill in your NFT's ID. Then press "List/Sell."<br></br></p>
   <form>
     <h5> ID: </h5>
       <input type="number" placeholder="numero uno" onChange={(event) => setID(event.target.value)}/>
@@ -42,20 +47,24 @@ const Sell = ({ accounts, setAccounts }) => {
   <p>Your wallet is not connected! You cannot sell.</p>
   )}
   <p id="status"> {status} </p>
-  <p>implement future "feedback"</p>
+  <p>you will need to confirm a second step (after approving the address, the listing of the nft follows)</p>
 </div>
   <p> <br></br> Do you wish to reverse your Listing? <br></br> </p>
   <button id="mintButton" onClick={onCancelPressed}> Cancel NFT Listing <br></br>
   </button>
 </div>
 <div class="col-sm">
-  <p> <br></br> <br></br> <br></br> need to get scrolling working before implementing anymore functions :D</p>
   <p> <br></br> Do you wish to cancel before delivery? <br></br> </p>
-  <button id="mintButton" onClick={onCancelPressed}>Cancel purchase before delivery<br></br>
+  <form>
+    <h5> ID: </h5>
+      <input type="number" placeholder="numero uno" onChange={(event) => setID(event.target.value)}/>
+  </form>
+    <br></br>
+  <button id="mintButton" onClick={onCancelPressed2}>Cancel sale before delivery<br></br>
   </button>
-  <p> <br></br> Are you ready to send your Phygital to the Buyer? <br></br> </p>
+  <p> <br></br> <br></br> Are you ready to send your Phygital to the Buyer? <br></br> </p>
   <button id="mintButton" onClick={''}>
-    Initiate Delivery <br></br>
+    Initiate delivery <br></br>
   </button>
   <p><br></br>It would be neat to somehow see the current status @ the moment (nice2have)
   </p>

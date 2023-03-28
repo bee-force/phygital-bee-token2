@@ -1,14 +1,18 @@
 import { useState, useEffect } from 'react';
 import { ethers } from "ethers";
 import { Row, Col, Card, Button } from 'react-bootstrap';
+import { buyNFT} from "./Interact";
 
 import physicalNFT from '../contractsData/BeeToken.json'
-import phygitalEscrow from '../contractsData/PhygitalEscrow.json'
+import phygitalEscrow from '../contractsData/Remake_PhygitalEscrow.json'
+import { json } from 'react-router';
 
 // address of deployed NFT smart contract
 const physicalNFTAddress = '0x944A8Ae87be2e8b134002D26139c7a888aFd38F6';
 // address of deployed Escrow smart contract 
 const phygitalEscrowAddress = '0x998Cf6565aa1FE53721E9e77361a0f876f8E6547';
+const phygitalEscrowAddress2 = '0xcFA0882376258a6912CC2f322DB139bCf6ad46A2'; 
+const phygitalEscrowAddress4 = '0x23e3182C4f1a5F2A54CF416B7f13475748b227A9'; 
 
 const Home = ({ accounts }) => {
   const metadata ='';
@@ -26,7 +30,9 @@ const Home = ({ accounts }) => {
     setStatus(status);
 };*/
   
-const onBuyPressed= async () => {
+const onBuyPressed= async (item) => {
+  const { status } = await buyNFT(item.itemId, { value: item.totalPrice });
+  loadItems()
   console.log('Lets buy some NFTs')
 };
 
@@ -37,7 +43,7 @@ const onBuyPressed= async () => {
       const signer = provider.getSigner();
       // NFT
       const nft = new ethers.Contract(physicalNFTAddress, physicalNFT.abi,signer)
-      const listedNFT = new ethers.Contract(phygitalEscrowAddress, phygitalEscrow.abi, signer)
+      const listedNFT = new ethers.Contract(phygitalEscrowAddress4, phygitalEscrow.abi, signer)
 
       const itemCount = await listedNFT.itemCount()
       console.log(itemCount);
@@ -56,6 +62,7 @@ const onBuyPressed= async () => {
           items.push({
             itemId: item.itemId,
             seller: item.seller,
+            tokenId: item.tokenId,
             name: metadata.name,
             description: metadata.description,
             image: metadata.image
@@ -63,7 +70,8 @@ const onBuyPressed= async () => {
       } 
     }
     setLoading(false)
-    setItems(items)     
+    setItems(items)   
+    console.log(items)  
   }
 
   useEffect(() => {
@@ -86,7 +94,10 @@ const onBuyPressed= async () => {
                     <Card.Body color="secondary">
                       <Card.Title>{item.name}</Card.Title>
                       <Card.Text>
-                        Description: {item.description}
+                        Description: {item.description} 
+                      </Card.Text>
+                      <Card.Text>
+                      ID: {JSON.stringify(item.tokenId)}
                       </Card.Text>
                     </Card.Body>
                     <Card.Footer>

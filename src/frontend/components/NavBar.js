@@ -27,6 +27,7 @@ const NavBar = ({ accounts, setAccounts }) => {
             <div><Nav.Link as={Link} to="/Mint">Mint-</Nav.Link></div>
             <div><Nav.Link as={Link} to="/Sell"> Sell-</Nav.Link></div>
             <div><Nav.Link as={Link} to="/Buy">Buy-</Nav.Link></div>
+            <div><Nav.Link as={Link} to = "/NFCChipValidation">NFCTag</Nav.Link></div>
         </div>    
         <div className='nav__brand'>
                 <img src={super_bee} alt="Super Bee" />

@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { buyNFT, cancelNFTSale } from "./Interact";
+import { buyNFT, cancelNFTSale, confirmNFTDelivery } from "./Interact";
+
 
 
 /*   <h5> <br></br> Address: </h5>
@@ -55,7 +56,7 @@ const Buy = ({ accounts, setAccounts }) => {
 </div>
 <div class="col-sm">
 <p> <br></br> Do you wish to cancel the purchase before delivery? <br></br> </p>
-<form>
+  <form>
     <h5> ID: </h5>
       <input type="number" placeholder="numero uno" onChange={(event) => setID(event.target.value)}/>
   </form>
@@ -63,6 +64,11 @@ const Buy = ({ accounts, setAccounts }) => {
   <button id="mintButton" onClick={onCancelPressed}>Cancel purchase before delivery<br></br>
   </button>
   <p> <br></br> <br></br> Has you delivery arrived? <br></br> </p>
+  <form>
+    <h5> ID: </h5>
+      <input type="number" placeholder="numero uno" onChange={(event) => setID(event.target.value)}/>
+  </form>
+  <br></br>
   <button id="mintButton" onClick={onConfirmPressed}>
     Confirm Delivery <br></br>
   </button>

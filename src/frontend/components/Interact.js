@@ -1,6 +1,6 @@
 import {pinJSONToIPFS} from './pinata.js'
 import { ethers } from 'ethers';
-import phygitalEscrow from '../contractsData/PhygitalEscrow.json'
+import phygitalEscrow from '../contractsData/Remake_PhygitalEscrow.json'
 import phyiscalNFT from '../contractsData/BeeToken.json'
 
 import { create as ipfsHttpClient } from 'ipfs-http-client'
@@ -21,7 +21,10 @@ const client = ipfsHttpClient({
 
 // address of deployed NFT smart contract
 const physicalNFTAddress = '0x944A8Ae87be2e8b134002D26139c7a888aFd38F6';
-const phygitalEscrowAddress = '0x998Cf6565aa1FE53721E9e77361a0f876f8E6547'
+const phygitalEscrowAddress = '0x998Cf6565aa1FE53721E9e77361a0f876f8E6547';
+const phygitalEscrowAddress2 = '0xcFA0882376258a6912CC2f322DB139bCf6ad46A2'; 
+const phygitalEscrowAddress3 = '0x0b552646576d03eA256F086ae336e8c2F11a104A';
+const phygitalEscrowAddress4 = '0x23e3182C4f1a5F2A54CF416B7f13475748b227A9'; // this is the one I am using! 
 
 
 export const mintNFT = async(name, description) => {
@@ -81,9 +84,6 @@ const uri = `https://ipfs.infura.io/ipfs/${result.path}`
 }
 
 
-
-
-
 async function handleMint(uri) {
   // if user is connected or has metamask logged in
   if (window.ethereum) {
@@ -118,19 +118,31 @@ export const listNFT = async(id) => {
 
   const nft = new ethers.Contract(physicalNFTAddress,phyiscalNFT.abi,signer)
 
-  const escrow = new ethers.Contract(phygitalEscrowAddress, phygitalEscrow.abi, signer)
+  const escrow = new ethers.Contract(phygitalEscrowAddress4, phygitalEscrow.abi, signer)
 
   // approve escrow contract      
-  const response2 = await(await nft.approve(phygitalEscrowAddress, id)).wait()
+  const response2 = await(await nft.approve(phygitalEscrowAddress4, id)).wait()
   console.log('response: ', response2)
-  
-  // this should be in UI l8er 
-  const price = 0.00001;
+  console.log('Hello?')
+
+  const price = 1;
   const listingPrice = ethers.utils.parseEther(price.toString())
-  // list NFT with escrow
+  console.log(listingPrice);
+  // why is this being ignored??
+  // list NFT with escrow - so another window opens at this point? 
   await(await escrow.ListNFT(nft.address, id, listingPrice)).wait()
   console.log('Done listing')
+
   }
+
+/*const p = ethers.utils.parseUnits('2')
+const a = ethers.utils.parseUnits('2')
+
+p.toString() // '2000000000000000000'
+a.toString() // '2000000000000000000' */
+
+
+
 
 export const cancelNFT = async() => {
 
@@ -146,11 +158,34 @@ export const buyNFT = async(id, price) => {
 
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner();
-  const escrow = new ethers.Contract(phygitalEscrowAddress, phygitalEscrow.abi, signer)
+  const escrow = new ethers.Contract(phygitalEscrowAddress4, phygitalEscrow.abi, signer)
   // deposit eth
-  const price = ethers.utils.parseEther(price.toString())
-  await(await escrow.depositETH(id, price)).wait()
+  const price_parsed = ethers.utils.parseEther(price.toString())
+  await(await escrow.depositETH(id)).wait()
   console.log('Done Buying')
 
 
+}
+
+
+export const cancelNFTSale = async(id) => {
+
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const signer = provider.getSigner();
+  const escrow = new ethers.Contract(phygitalEscrowAddress4, phygitalEscrow.abi, signer)
+  // return ownership of NFT 
+  await(await escrow.cancelBeforeDelivery(id)).wait()
+  console.log('Done Canceling')
+}
+
+
+
+export const confirmNFTDelivery= async(id) => {
+
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const signer = provider.getSigner();
+  const escrow = new ethers.Contract(phygitalEscrowAddress4, phygitalEscrow.abi, signer)
+  // return ownership of NFT 
+  await(await escrow.confirmDelivery(id)).wait()
+  console.log('Done Confirming')
 }
