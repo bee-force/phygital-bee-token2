@@ -37,7 +37,8 @@ import {
                 <Route path="/Buy" element={
                   <Buy accounts={accounts} setAccount={setAccounts} />
                 } />
-                 <Route path="/NFCChipValidation" element={<NFCChipValidation />}/> 
+                 <Route path="/NFCChipValidation" element={
+                 <NFCChipValidation accounts={accounts} setAccount={setAccounts} />}/> 
               </Routes>
               </div>
             </div>

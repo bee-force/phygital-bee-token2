@@ -1,21 +1,32 @@
 import { ethers } from 'ethers';
 import React, { useState, useEffect } from 'react';
-import physicalNFT from '../contractsData/BeeToken.json';
+import physicalNFT from '../contractsData/BeeToken.json'
 
-const NFCChipValidation = () => {
+const NFCChipValidation = ({accounts}) => {
+
   const [userAddress, setUserAddress] = useState('');
   const [tokenAddress, setTokenAddress] = useState('');
-  const [tokenIds, setTokenIds] = useState([]);
   const [balance, setBalance] = useState('');
-  const [metadata, setMetadata] = useState([]);
-
+  const [metadata, setMetadata] = useState('');
+  const isConnected = Boolean(accounts[0]); 
+  const [tokenId, setTokenId] = useState('');
+    
   useEffect(() => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
 
-    // Get the token address and create a contract instance
+    // Get the token address 
     const tokenAddress = '0x944A8Ae87be2e8b134002D26139c7a888aFd38F6';
     setTokenAddress(tokenAddress);
+
+    // Get the user's address from MetaMask
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    async function getAddress() {
+      const address = await signer.getAddress();
+      setUserAddress(address);
+    }
+    getAddress();
+
+    // Create a contract instance
     const tokenContract = new ethers.Contract(tokenAddress, physicalNFT.abi, signer);
 
     async function getTokenBalance() {
@@ -25,69 +36,65 @@ const NFCChipValidation = () => {
           try {
             const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
             console.log('Accounts:', accounts);
-            const address = accounts[0];
-
-            // Get the token IDs for the user
-            const tokenIds = await tokenContract.balanceOf(address);
-            setTokenIds(tokenIds.toNumber());
+            // Use accounts in your DApp
           } catch (error) {
             console.error('Error requesting accounts:', error);
           }
         } else {
           console.error('No ethereum provider detected');
         }
-
-        // Get the user's address from MetaMask
-        const address = await signer.getAddress();
-        setUserAddress(address);
-
+    
         // Get the token balance for the user
-        const balance = await tokenContract.balanceOf(address);
+        const balance = await tokenContract.balanceOf(userAddress);
+
         setBalance(balance.toString());
       } catch (error) {
         console.log(error);
       }
     }
 
+    // Get the metadata for the token
     const getMetadata = async () => {
-      try {
-        const metadataArray = [];
-        for (const tokenId of tokenIds) {
-          const tokenURI = await tokenContract.tokenURI(tokenId);
-          const response = await fetch(tokenURI);
-          const metadata = await response.json();
-          metadataArray.push(metadata);
-        }
-        setMetadata(metadataArray);
-      } catch (error) {
-        console.log(error);
-      }
+      const tokenURI = await tokenContract.tokenURI(tokenId);
+      const response = await fetch(tokenURI);
+      const metadata = await response.json();
+      setMetadata(metadata);
+    }     
+
+    getTokenBalance();
+        
+    if (tokenId !== '') {
+      getMetadata();
     }
       
-    getTokenBalance();
-    getMetadata();
-  }, []);
+  }, [tokenId, userAddress]);
 
-  return (
-    <div className="container">
-      <h2>Physical NFT</h2>
-      <p><br /><br />Verify your NFC Chip - this could be similar to the homepage but only presenting one token!</p>
-        <h1>Token balance</h1>
-        <p>User address: {userAddress}</p>
-        <p>Token address: {tokenAddress}</p>
-        <p>Token balance: {balance}</p>
-    <div>
-        {metadata.map((m, i) => (
-        <div key={i}>
-          <h3>Token {i+1} metadata</h3>
-          <p>Metadata ID: {m.tokenId}</p>
-          <p>Metadata name: {m.name}</p>
-          <p>Metadata description: {m.description}</p>
+  const handleInputChange = (event) => {
+    setTokenId(event.target.value);
+  }
+    
+    
+      return (
+        <div className="container">
+          <h1>Phygital</h1>
+          <p><br/><br/>Check the NFC Chip of your Phygital!</p>   
+          {isConnected ? (
+            <React.Fragment>
+              <h5>Phygital Info:<br/><br/></h5>
+              <input type="text" placeholder="Enter token ID" value={tokenId} onChange={handleInputChange} />
+        {tokenId !== '' && metadata.name && (
+          <>
+            <p><br/><br/>Metadata name: {metadata.name}</p>
+            <p><br/><br/>Metadata description: {metadata.description}</p> 
+            <p><br/><br/>Function that will enforce action in Escrow Contract?</p>
+          </>
+        )}
+            </React.Fragment>
+          ):( 
+            <p>Your wallet is not connected! You need to be connected! </p> 
+          )}
         </div>
-      ))}
-    </div>
-  </div>
-  );
-}
-
+      );
+   }
+    
 export default NFCChipValidation;
