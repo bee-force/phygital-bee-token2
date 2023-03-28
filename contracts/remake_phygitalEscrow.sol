@@ -138,6 +138,14 @@ contract Remake_PhygitalEscrow is ReentrancyGuard {
         contractState = ContractState.cancelNFT;
     }
 
+
+    //--->  redeploy with this function! 
+    function reverseNftTransfer() public inContractState(ContractState.nftDeposited) onlySeller {
+    IERC721(nft).safeTransferFrom(address(this), seller, tokenID);
+    contractState = ContractState.newEscrow;
+}
+
+
      // both seller and buyer can cancel before delivery (there is already ETH in contract)
     function cancelBeforeDelivery(uint _tokenID) public inContractState(ContractState.ethDeposited) BuyerOrSeller
     {

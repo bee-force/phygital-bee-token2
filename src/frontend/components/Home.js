@@ -15,7 +15,6 @@ const phygitalEscrowAddress2 = '0xcFA0882376258a6912CC2f322DB139bCf6ad46A2';
 const phygitalEscrowAddress4 = '0x23e3182C4f1a5F2A54CF416B7f13475748b227A9'; 
 
 const Home = ({ accounts }) => {
-  const metadata ='';
   const isConnected = Boolean(accounts[0]); 
   //const [metaname, setMetaName] = useState(""); // string that stores the NFT's name
   //const [description, setDescription] = useState(""); //string that stores the description
@@ -48,7 +47,7 @@ const onBuyPressed= async (item) => {
       const itemCount = await listedNFT.itemCount()
       console.log(itemCount);
       let items = []
-      for (let i = 1; i <= itemCount; i++) {
+      //for (let i = 1; i <= itemCount; i++) {
         const item = await listedNFT.items(i)
         if (!item.sold) {
           // get uri url from nft contract
