@@ -6,6 +6,7 @@ const Mint = ({ accounts }) => {
 
     const [name, setName] = useState(""); // string that stores the NFT's name
     const [description, setDescription] = useState(""); //string that stores the description
+    const [image, setImage] = useState("");
     const [status, setStatus] = useState(""); // string that contains the message to display at the bottom of the UI
     
     // const [mintAmount, setMintAmount] = useState(1); // this can be updated with that setMintAmount & starts with 1 
@@ -37,6 +38,12 @@ const Mint = ({ accounts }) => {
       <input
         type="text"
         placeholder="what is so awesome about my object"
+        onChange={(event) => setDescription(event.target.value)}
+      />
+
+      <input
+        type="image"
+        placeholder="picture of my collectible"
         onChange={(event) => setDescription(event.target.value)}
       />
     </form>

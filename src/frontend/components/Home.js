@@ -47,7 +47,7 @@ const onBuyPressed= async (item) => {
       const itemCount = await listedNFT.itemCount()
       console.log(itemCount);
       let items = []
-      //for (let i = 1; i <= itemCount; i++) {
+      for (let i = 1; i <= itemCount; i++) {
         const item = await listedNFT.items(i)
         if (!item.sold) {
           // get uri url from nft contract
