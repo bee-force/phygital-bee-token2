@@ -31,3 +31,36 @@ export const pinJSONToIPFS = async(JSONBody) => {
 
     });
 };
+
+
+const pinFileToIPFS = async(file) => {
+    const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
+    const data = new FormData();
+    data.append('file', file);
+
+    return axios
+        .post(url, data, {
+            headers: {
+                'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
+                pinata_api_key: key,
+                pinata_secret_api_key: secret,
+            }
+        })
+        .then(function (response) {
+            return {
+                success: true,
+                pinataUrl: "https://gateway.pinata.cloud/ipfs/" + response.data.IpfsHash,
+                status: "lookin' good!"
+            };
+        })
+        .catch(function (error) {
+            console.log(error)
+            return {
+                success: false,
+                message: error.message,
+                status: "lookin' bad!"
+            }
+
+    });
+};
+
