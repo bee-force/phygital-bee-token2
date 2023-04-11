@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import React, { useState, useEffect } from 'react';
 import physicalNFT from '../contractsData/BeeToken.json'
-
+import { Card } from 'react-bootstrap';
 
 const NFCChipValidation = ({accounts}) => {
 
@@ -82,16 +82,13 @@ const NFCChipValidation = ({accounts}) => {
           {isConnected ? (
             <React.Fragment>
               <h5>Phygital Info:<br/><br/></h5>
-              <input type="text" placeholder="Enter token ID" value={tokenId} onChange={handleInputChange} className="input-style3"/>
-              
+              <input type="text" placeholder="Enter token ID" value={tokenId} onChange={handleInputChange} />
         {tokenId !== '' && metadata.name && (
-          <div class="element">
           <>
-            <h7><br/><br/>Metadata name: {metadata.name}</h7>
+            <p><br/><br/>Metadata name: {metadata.name}</p>
             <p><br/><br/>Metadata description: {metadata.description}</p> 
             <p><br/><br/>Function that will enforce action in Escrow Contract?</p>
           </>
-          </div>
         )}
             </React.Fragment>
           ):( 
