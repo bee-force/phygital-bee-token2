@@ -1,6 +1,5 @@
-import { Link 
-} from "react-router-dom"
-import { Navbar, Nav, Button, Container } from 'react-bootstrap'
+import { Link } from "react-router-dom"
+import { Nav } from 'react-bootstrap'
 import React from 'react';
 import super_bee from '../assets/super_bee.svg'; // create own logo 
 
@@ -23,10 +22,10 @@ const NavBar = ({ accounts, setAccounts }) => {
     return (
     <nav>
         <div className='nav__links'>
-           <div><Nav.Link as={Link} to="/">-Home-</Nav.Link></div>
-            <div><Nav.Link as={Link} to="/Mint">Mint-</Nav.Link></div>
-            <div><Nav.Link as={Link} to="/Sell"> Sell-</Nav.Link></div>
-            <div><Nav.Link as={Link} to="/Buy">Buy-</Nav.Link></div>
+           <div><Nav.Link as={Link} to="/">Home</Nav.Link></div>
+            <div><Nav.Link as={Link} to="/Mint">Mint</Nav.Link></div>
+            <div><Nav.Link as={Link} to="/Sell">Sell</Nav.Link></div>
+            <div><Nav.Link as={Link} to="/Buy">Buy</Nav.Link></div>
             <div><Nav.Link as={Link} to = "/NFCChipValidation">NFCTag</Nav.Link></div>
         </div>    
         <div className='nav__brand'>
@@ -36,7 +35,7 @@ const NavBar = ({ accounts, setAccounts }) => {
         <div className ='nav__links'>
             {/*Connect if we are not connected we will press this buttton which will execute the function*/}
             {isConnected ?(
-                <p>Connected</p>
+                <button className='nav__connect'>Connected</button>
             ) : (
                 <button
                     type="button" 

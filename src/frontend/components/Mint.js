@@ -13,57 +13,50 @@ const Mint = ({ accounts }) => {
     
     const isConnected = Boolean(accounts[0]); 
     
-      const onMintPressed = async () => {
+    const onMintPressed = async () => {
         const { status } = await mintNFT(name, description);
         setStatus(status);
     };
     
     return (
-      <div>
-      <h2>Physical NFT</h2>
-      <p><br></br>Mint your very own Phyiscal NFT!</p>
-    <p>
-      Please fill out your asset's name and description.  <br></br>  <br></br> Then press "Mint."
-      <br></br>
-    </p>
-    <form>
-    <h5> <br></br> Name: </h5>
-      <input
-        type="text"
-        placeholder="e.g. special Vase"
-        onChange={(event) => setName(event.target.value)}
-      />
-      
-      <h5> <br></br>Description: </h5>
-      <input
-        type="text"
-        placeholder="what is so awesome about my object"
-        onChange={(event) => setDescription(event.target.value)}
-      />
-
-      <h5> <br></br>Future Image Upload: </h5>
-      <input
-        type="image"
-        placeholder="picture of my collectible"
-        onChange={(event) => setImage(event.target.value)}
-      />
-
-    </form>
-    <br></br>
-    <div>
-    {isConnected ? (
-    <button id="mintButton" onClick={onMintPressed}>
-      Mint NFT
-    </button>
-    ) : (
-      <p>Your wallet is not connected! You cannot mint.</p>
-    )}
-    <p id="status">
-      {status}
-    </p>
-  </div>
-  </div>
+      <div class="container">
+          <h3>Mint your very own Phygital BeeToken!</h3>
+          <br></br>
+          <div class="row">
+            <div class="col-sm">
+              <div class="element2"> 
+                <p>Please fill out your asset's name and description. <br></br>Then press "Mint."
+                  <br></br>
+                </p>
+                <div className="input-container">
+                  <label htmlFor="id">Name of Phygital BeeToken:</label>
+                  <input type="text" id="name" placeholder="Enter Name" onChange={(event) => setName(event.target.value)} className="input-style"/>
+                </div>
+                <div className="input-container">
+                  <label htmlFor="price">Description:</label>
+                  <textarea id="description" rows="4" cols="50" placeholder="Describe your Physical Asset."onChange={(event) => setDescription(event.target.value)} className="input-style2"></textarea>
+                </div>
+                <div className="input-container">
+                  <label htmlFor="price">Image of Physical Asset:</label>
+                  <input type="image" id="description" onChange={(event) => setImage(event.target.value)} className="input-style"/>
+                </div>
+                <div>
+                  {isConnected ? (
+                    <button id="mintButton" onClick={onMintPressed}>
+                      Mint NFT
+                    </button>
+                  ) : (
+                    <p>Your wallet is not connected! You cannot mint.</p>
+                  )}
+                  <p id="status">
+                    {status}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
     );
-  }
+};
 
-export  default Mint;
+export default Mint;

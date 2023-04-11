@@ -5,8 +5,14 @@ import { Row, Col, Card } from 'react-bootstrap';
 import physicalNFT from '../contractsData/BeeToken.json'
 import phygitalEscrowJson from '../contractsData/remakePhygitalEscrow3.json'
 
+
 const beeTokenAddress = process.env.REACT_APP_BEE_TOKEN_ADDRESS;
 const phygitalEscrowAddress = process.env.REACT_APP_ESCROW_ADDRESS;
+
+
+//const beeTokenAddress = '0x944A8Ae87be2e8b134002D26139c7a888aFd38F6';
+//const phygitalEscrowAddress = '0xBd3FAf6360D920Ff31A806813CFAd30f11fa1803';
+
 
 const Home = ({ accounts }) => {
   const isConnected = Boolean(accounts[0]); 
@@ -33,7 +39,8 @@ const Home = ({ accounts }) => {
       let items = []
       for (let i = 1; i <= itemCount; i++) {
         const item = await listedNFT.items(i)
-        if (!item.sold && item.state == 1) { // add another condition like to check the state if possible     
+        if (!item.sold && item.state == 1) { // add another condition like to check the state if possible 
+          
           // testing purposes 
           console.log(item.tokenId);
           console.log(item.state);

@@ -14,7 +14,7 @@
     "react-bootstrap": "^2.7.1",
     "react-dom": "^18.2.0",
     "react-router": "^6.8.1",
-    "react-router-dom": "^6.8.1",
+    "react-router-dom": "^6.10.0",
     "react-scripts": "5.0.1",
     "react-scroll": "^1.8.9",
     "web-vitals": "^2.1.4"
@@ -47,6 +47,7 @@
     "@nomicfoundation/hardhat-toolbox": "^2.0.1",
     "@openzeppelin/hardhat-upgrades": "^1.22.1",
     "dotenv": "^16.0.3",
+    "dotenv-webpack": "^8.0.1",
     "hardhat": "^2.12.7"
   }
 }
