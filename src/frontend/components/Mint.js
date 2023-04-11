@@ -41,11 +41,13 @@ const Mint = ({ accounts }) => {
         onChange={(event) => setDescription(event.target.value)}
       />
 
+      <h5> <br></br>Future Image Upload: </h5>
       <input
         type="image"
         placeholder="picture of my collectible"
-        onChange={(event) => setDescription(event.target.value)}
+        onChange={(event) => setImage(event.target.value)}
       />
+
     </form>
     <br></br>
     <div>

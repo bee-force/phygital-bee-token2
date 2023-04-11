@@ -1,21 +1,19 @@
-import dotenv from 'dotenv';
 import { useState, useEffect } from 'react';
 import { ethers } from "ethers";
 import { Row, Col, Card, Button } from 'react-bootstrap';
 import { buyNFT} from "./Interact";
 
 import physicalNFT from '../contractsData/BeeToken.json'
-//import escrowAddress from '../contractsData/Remake_PhygitalEscrow.json'
-import escrowAddress from '../contractsData/remakePhygitalEscrow3.json'
+import phygitalEscrow from '../contractsData/remakePhygitalEscrow2.json'
 import { json } from 'react-router';
 
-require('dotenv').config();
-const beeTokenAddress = process.env.BEE_TOKEN_ADDRESS;
-//const escrowAddress = process.env.ESCROW_ADDRESS;
-
-
-const phygitalEscrowAddress = '0xBd3FAf6360D920Ff31A806813CFAd30f11fa1803';
-
+// address of deployed NFT smart contract
+const physicalNFTAddress = '0x944A8Ae87be2e8b134002D26139c7a888aFd38F6';
+// address of deployed Escrow smart contract 
+const phygitalEscrowAddress = '0x998Cf6565aa1FE53721E9e77361a0f876f8E6547';
+const phygitalEscrowAddress2 = '0xcFA0882376258a6912CC2f322DB139bCf6ad46A2'; 
+const phygitalEscrowAddress4 = '0x23e3182C4f1a5F2A54CF416B7f13475748b227A9'; 
+const phygitalEscrowAddress5 = '0x71026790a5A65abB36Bd3c12565b346B706516A3'; // using this now
 
 const Home = ({ accounts }) => {
   const isConnected = Boolean(accounts[0]); 
@@ -33,7 +31,7 @@ const Home = ({ accounts }) => {
 };*/
   
 const onBuyPressed= async (item) => {
-  const { status } = await buyNFT(item.itemId, { value: item.totalPrice });
+  const { status } = await buyNFT(item.tokenId, { value: item.totalPrice });
   loadItems()
   console.log('Lets buy some NFTs')
 };
@@ -44,33 +42,34 @@ const onBuyPressed= async (item) => {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       // NFT
-      const nft = new ethers.Contract(beeTokenAddress, physicalNFT.abi,signer)
-      const listedNFT = new ethers.Contract(escrowAddress
-      , escrowAddress.abi, signer)
-
-      const address = '0xA661cbcc7F0C4805B08501793D67ef668b8133A1';
-      const balanceWei = await provider.getBalance(escrowAddress
-      );
-      //const balanceWei = await provider.getBalance(address);
-      const balanceEth = ethers.utils.formatEther(balanceWei);
-      console.log(`The balance of ${escrowAddress
-    } is ${balanceEth} ETH`);
-
-
+      const nft = new ethers.Contract(physicalNFTAddress, physicalNFT.abi,signer)
+      const listedNFT = new ethers.Contract(phygitalEscrowAddress5, phygitalEscrow.abi, signer)
 
       const itemCount = await listedNFT.itemCount()
       console.log(itemCount);
 
+      //console.log([listedNFT.itemId, listedNFT.nft, listedNFT.price, listedNFT.seller, listedNFT.sold, listedNFT.state]);
+      async function getItemByTokenId(tokenId) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        
+        const listedNFT = new ethers.Contract(phygitalEscrowAddress5, phygitalEscrow.abi, signer)
+        const item = await listedNFT.methods.items(tokenId).call();
+        return item;
+      }
+      
+      // usage
+      const tokenId = 9;
+      const item = await getItemByTokenId(tokenId);
+      console.log(item);
 
       let items = []
-      for (let i = 1; i <= itemCount; i++) {
+      for (let i = 0; i <= itemCount; i++) {
         const item = await listedNFT.items(i)
-        if (!item.sold && item.state == 1) { // add another condition like to check the state if possible 
-          // get uri url from nft contract
-          console.log(item.tokenId);
-          console.log(item.state);
-          console.log(item.sold);
+        console.log(item);
 
+        if (!item.sold) {
+          // get uri url from nft contract
           const uri = await nft.tokenURI(item.tokenId)
           // use uri to fetch the nft metadata stored on ipfs - not sure if this will work out with m stuff 
           const response = await fetch(uri)
@@ -79,9 +78,8 @@ const onBuyPressed= async (item) => {
           //const totalPrice = await marketplace.getTotalPrice(item.itemId)
           // Add item to items array
           items.push({
-            itemId: item.itemId,
-            seller: item.seller,
             tokenId: item.tokenId,
+            seller: item.seller,
             name: metadata.name,
             description: metadata.description,
             image: metadata.image
@@ -121,7 +119,7 @@ const onBuyPressed= async (item) => {
                     </Card.Body>
                     <Card.Footer>
                       <div className='d-grid'>
-                        <button id="buyButton" onClick={onBuyPressed}>Future Buy Button/ Link to other page?
+                        <button id="buyButton" onClick={() => onBuyPressed(item)}>Future Buy Button/ Link to other page?
                         </button>
                       </div>
                     </Card.Footer>

@@ -27,6 +27,7 @@ contract Remake_PhygitalEscrow is ReentrancyGuard {
 
     uint256 tokenID;
 
+    // do I still need this? 
     ContractState public contractState;
 
     struct Item {
@@ -36,6 +37,7 @@ contract Remake_PhygitalEscrow is ReentrancyGuard {
         uint price;
         address payable seller;
         bool sold;
+        ContractState state;
     }
 
     // itemId -> Item
@@ -117,7 +119,8 @@ contract Remake_PhygitalEscrow is ReentrancyGuard {
             _tokenId,
             _price,
             payable(msg.sender),
-            false
+            false,
+            ContractState.nftDeposited
         );
         // emit Offered event
         emit Offered(
@@ -132,16 +135,17 @@ contract Remake_PhygitalEscrow is ReentrancyGuard {
     }
 
     // this cancels the transferal, rather reverts its & the seller is owner once again 
-    function reverseNftTransfer(uint _tokenID) public inContractState(ContractState.nftDeposited) onlySeller {
-        tokenID = _tokenID;
-        IERC721(nft).safeTransferFrom(address(this), msg.sender, tokenID);
-        contractState = ContractState.cancelNFT;
-    }
+    //function reverseNftTransfer(uint _tokenID) public inContractState(ContractState.nftDeposited) onlySeller {
+    //    tokenID = _tokenID;
+    //    IERC721(nft).safeTransferFrom(address(this), msg.sender, tokenID);
+    //    contractState = ContractState.cancelNFT;
+    //}
 
 
     //--->  redeploy with this function! 
     function reverseNftTransfer() public inContractState(ContractState.nftDeposited) onlySeller {
     IERC721(nft).safeTransferFrom(address(this), seller, tokenID);
+    items[itemCount].state = ContractState.cancelNFT;
     contractState = ContractState.newEscrow;
 }
 
@@ -157,7 +161,7 @@ contract Remake_PhygitalEscrow is ReentrancyGuard {
             Item storage item = items[_tokenID];
             // update item to not sold
             item.sold = false;
-            
+            item.state = ContractState.canceledBeforeDelivery; // update the state of the item
             contractState = ContractState.canceledBeforeDelivery;     
         }
 

@@ -1,29 +1,37 @@
 import { useState } from 'react';
-import { listNFT, cancelNFT, cancelNFTSale } from "./Interact";
+import { listNFT, cancelNFT, cancelNFTSale, initiateDelivery } from "./Interact";
 import * as Scroll from 'react-scroll';
 
 const Sell = ({ accounts, setAccounts }) => {
 
     const [address, setAddress] = useState(""); // string that stores the NFT's address
     const [ID, setID] = useState(""); //string that stores the description
+    const [ID2, setID2] = useState(""); //string that stores the description
+    const [price, setPrice] = useState(""); // price storage 
     const [status, setStatus] = useState(""); // string that contains the message to display at the bottom of the UI
 
     const isConnected = Boolean(accounts[0]); 
 
     const onListPressed = async () => { //transfer to escrow or marketplace?
-        const { status } = await listNFT(ID);
+        const { status } = await listNFT(ID, price);
         setStatus(status);
     };
 
     const onCancelPressed = async () => { //transfer to escrow or marketplace?
-      const { status } = await cancelNFT();
+      const { status } = await cancelNFT(ID2);
       setStatus(status);
   };
 
   const onCancelPressed2 = async () => { //transfer to escrow or marketplace?
     const { status } = await cancelNFTSale(ID);
     setStatus(status);
-};
+  }; 
+
+    const onDeliveryPressed = async () => { //transfer to escrow or marketplace?
+      const { status } = await initiateDelivery(ID);
+      setStatus(status);  
+  };
+
 
     return (
 <div class="container">
@@ -36,6 +44,8 @@ const Sell = ({ accounts, setAccounts }) => {
   <form>
     <h5> ID: </h5>
       <input type="number" placeholder="numero uno" onChange={(event) => setID(event.target.value)}/>
+    <h5> Price: </h5>
+      <input type="number" placeholder="numero uno" onChange={(event) => setPrice(event.target.value)}/>  
   </form>
     <br></br>
 <div>
@@ -50,6 +60,10 @@ const Sell = ({ accounts, setAccounts }) => {
   <p>you will need to confirm a second step (after approving the address, the listing of the nft follows)</p>
 </div>
   <p> <br></br> Do you wish to reverse your Listing? <br></br> </p>
+  <form>
+    <h5> ID: </h5>
+      <input type="number" placeholder="numero uno" onChange={(event) => setID2(event.target.value)}/>
+  </form>
   <button id="mintButton" onClick={onCancelPressed}> Cancel NFT Listing <br></br>
   </button>
 </div>
@@ -63,8 +77,11 @@ const Sell = ({ accounts, setAccounts }) => {
   <button id="mintButton" onClick={onCancelPressed2}>Cancel sale before delivery<br></br>
   </button>
   <p> <br></br> <br></br> Are you ready to send your Phygital to the Buyer? <br></br> </p>
-  <button id="mintButton" onClick={''}>
-    Initiate delivery <br></br>
+  <form>
+    <h5> ID: </h5>
+      <input type="number" placeholder="numero uno" onChange={(event) => setID(event.target.value)}/>
+  </form>
+  <button id="mintButton" onClick={onDeliveryPressed}>Initiate delivery <br></br>
   </button>
   <p><br></br>It would be neat to somehow see the current status @ the moment (nice2have)
   </p>
