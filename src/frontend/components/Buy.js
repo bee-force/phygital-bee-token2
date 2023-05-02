@@ -2,17 +2,14 @@ import { useState } from 'react';
 import { ethers } from "ethers";
 import { buyNFT, cancelNFTSale, confirmNFTDelivery } from "./Interact";
 
-import physicalNFT from '../contractsData/BeeToken.json'
 import phygitalEscrowJson from '../contractsData/remakePhygitalEscrow3.json'
 
-const beeTokenAddress = process.env.REACT_APP_BEE_TOKEN_ADDRESS;
 const phygitalEscrowAddress = process.env.REACT_APP_ESCROW_ADDRESS;
 
 /*   <h5> <br></br> Address: </h5>
       <input type="text" placeholder="e.g. 28394757023402307" onChange={(event) => setAddress(event.target.value)}/> */
 const Buy = ({ accounts, setAccounts }) => {
 
-    const [address, setAddress] = useState(""); // string that stores the NFT's address
     const [ID, setID] = useState(""); //string that stores the description
     const [status, setStatus] = useState(""); // string that contains the message to display at the bottom of the UI
     const [price, setPrice] = useState("");
@@ -36,9 +33,6 @@ const Buy = ({ accounts, setAccounts }) => {
     setStatus(status); 
 };
 
-const handleInputChange = (event) => {
-  setTokenId(event.target.value);
-};
 
 const handleSubmit = async (event) => {
   event.preventDefault();

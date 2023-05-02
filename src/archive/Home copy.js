@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { ethers } from "ethers";
 import { Row, Col, Card } from 'react-bootstrap';
 
-import physicalNFT from '../contractsData/BeeToken.json'
-import phygitalEscrowJson from '../contractsData/remakePhygitalEscrow3.json'
+import physicalNFT from '../frontend/contractsData/BeeToken.json'
+import phygitalEscrowJson from '../frontend/contractsData/remakePhygitalEscrow3.json'
 
 
 const beeTokenAddress = process.env.REACT_APP_BEE_TOKEN_ADDRESS;

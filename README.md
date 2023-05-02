@@ -6,4 +6,4 @@
 
 3. After Minting how do you know the ID number? 
 
-4. Clean Code ()
+4. Clean Code!!! Make Interact easier to read, maybe take out some functions out of sell & buy & so on
