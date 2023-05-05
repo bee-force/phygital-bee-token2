@@ -29,19 +29,16 @@ const Home = ({ accounts }) => {
     const balanceEth = ethers.utils.formatEther(balanceWei);
     console.log(`The balance of ${phygitalEscrowAddress} is ${balanceEth} ETH`);
     const itemCount = await listedNFT.itemCount();
-    console.log("Num of Tokens: "+ itemCount);
+    console.log(itemCount);
 
     let items = [];
     for (let i = 1; i <= itemCount; i++) {
       const item = await listedNFT.items(i);
-      console.log("TokenId1 " + item.tokenId);
-      console.log("Token State1 " + item.state);
-
       if (!item.sold && item.state == 1) {
         // add another condition like to check the state if possible
         // testing purposes
-        console.log("TokenId2 " + item.tokenId);
-        console.log("Token State2 " + item.state);
+        console.log(item.tokenId);
+        console.log(item.state);
         console.log(item.sold);
         // get uri url from nft contract
         const uri = await nft.tokenURI(item.tokenId);
@@ -118,5 +115,3 @@ const Home = ({ accounts }) => {
 };
 
 export default Home;
-
-
