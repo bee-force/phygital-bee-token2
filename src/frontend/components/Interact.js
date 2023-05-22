@@ -1,91 +1,69 @@
-import {pinJSONToIPFS, pinJSONAndImageToIPFS} from './pinata.js'
-import { ethers } from 'ethers';
-import phygitalEscrow from '../contractsData/remakePhygitalEscrow3.json'
-import phyiscalNFT from '../contractsData/BeeToken.json'
+import { pinJSONAndImageToIPFS } from "./pinata.js";
+import { ethers } from "ethers";
 
-import { create as ipfsHttpClient } from 'ipfs-http-client'
-export let Buffer = require("buffer").Buffer
+// Import JSON data for the BeeToken smart contract and the BeeToken Escrow smart contract
+import beeToken from "../contractsData/beeToken.json";
+import beeTokenEscrow from "../contractsData/beeTokenEscrow.json";
 
-const projectId = '2LTSVvQAYQc7Hd16uvGco7VgROt';
-const projectSecret = '69af64cda025fa2afe32054a152a31a3';
+// Get the BeeToken and BeeToken Escrow smart contract addresses from environment variables
+// const beeTokenAddress = process.env.REACT_APP_BEE_TOKEN_ADDRESS;
+// const beeTokenEscrowAddress = process.env.REACT_APP_ESCROW_ADDRESS;
+const beeTokenAddress = '0x5d73B90BE815e3DaB76436bc1ff268Da382FCC2e'
+const beeTokenEscrowAddress= '0x4D5C42d6beB8CcA4F014a1249074DB70303B3e8b'
 
-const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
-const client = ipfsHttpClient({
-    host: 'ipfs.infura.io',
-    port: 5001,
-    protocol: 'https',
-    headers: {
-        authorization: auth,
-    },
-});
+export const loadItems = async () => {
+  // Connect to the Web3 provider using the Ethereum wallet in the user's browser
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const signer = provider.getSigner();
+  const nft = new ethers.Contract(beeTokenAddress, beeToken.abi, signer);
+  const listedNFT = new ethers.Contract(
+    beeTokenEscrowAddress,
+    beeTokenEscrow.abi,
+    signer
+  );
 
-const beeTokenAddress = process.env.REACT_APP_BEE_TOKEN_ADDRESS;
-const phygitalEscrowAddress = process.env.REACT_APP_ESCROW_ADDRESS;
+  // Testing purposes
+  const balanceWei = await provider.getBalance(beeTokenEscrowAddress);
+  const balanceEth = ethers.utils.formatEther(balanceWei);
+  console.log(`The balance of ${beeTokenEscrowAddress} is ${balanceEth} ETH`);
+  const itemCount = await listedNFT.itemCount();
+  console.log("Num of Tokens: " + itemCount);
 
-export const mintNFT = async(name, description) => {
-    //error handling
-    if ((name.trim() === "" || description.trim() === "")) {
-      return {
-       success: false,
-       status: "❗Please make sure all fields are completed before minting.",
-      }
-     }
+  let items = [];
+  for (let i = 1; i <= itemCount; i++) {
+    const item = await listedNFT.items(i);
+    console.log("TokenId1 " + item.tokenId);
+    console.log("Token State1 " + item.state);
 
-     //make metadata
-  console.log("I am about to create a Javascript object")   
-  const metadata = {};
-  metadata.name = name;
-  metadata.description = description;
+    if (!item.sold && item.state === 1) {
+      // add another condition like to check the state if possible
+      // testing purposes
+      console.log("TokenId2 " + item.tokenId);
+      console.log("Token State2 " + item.state);
+      console.log(item.sold);
+      // get uri url from nft contract
+      const uri = await nft.tokenURI(item.tokenId);
+      // use uri to fetch the nft metadata stored on ipfs - not sure if this will work out with m stuff
+      const response = await fetch(uri);
+      const metadata = await response.json();
 
-  //make pinata call
-  const pinataResponse = await pinJSONToIPFS(metadata);
-
-  if (!pinataResponse.success) {
-      return {
-          success: false,
-          status: "Something went wrong while uploading your tokenURI.",
-      }
-  } 
-  else {
-      const tokenURI = pinataResponse.pinataUrl;
-    //console.log("Looking @ the tokenuri once again")
-    console.log(tokenURI);
-    handleMint(tokenURI);
-
-    return {
-      success: true,
-      status: "lookin' good!",
-      tokenURI: pinataResponse.pinataUrl
+      items.push({
+        itemId: item.itemId,
+        seller: item.seller,
+        tokenId: item.tokenId,
+        itemPrice: item.price,
+        state: item.state,
+        name: metadata.name,
+        description: metadata.description,
+        image: metadata.image,
+      });
     }
   }
 
-}
-
-// ucaught (in promise) TypeError: undefined has no properties
-export const mintNFT2 = async(name, description) => {
-
-//make metadata
-console.log(name)
-
-console.log("I am about to use JSON stringify")    
-
-const result = await client.add(JSON.stringify({name, description}))
-
-console.log("This is the JSON result: " + result)
-
-const uri = `https://ipfs.infura.io/ipfs/${result.path}`
-  
-  handleMint(uri);
-  
-}
-
-const dataURItoBlob = (dataURI) => {
-  const byteString = Buffer.from(dataURI.split(',')[1], 'base64');
-  const buffer = new Uint8Array.from(byteString);
-  return new Blob([buffer], { type: 'image/png' });
+  return items;
 };
 
-export const mintNFT3 = async(name, description, image) => {
+export const mintNFT = async (name, description, image) => {
   //error handling
   if (name.trim() === "" || description.trim() === "") {
     return {
@@ -102,13 +80,11 @@ export const mintNFT3 = async(name, description, image) => {
 
   console.log(image);
   // Convert the image to a File object
-  //const file = dataURItoBlob(image);
 
   if (image instanceof File) {
-    console.log("image is instance of File object")
+    console.log("image is instance of File object");
   } else {
-    console.log("find function to transform the image")
-    
+    console.log("find function to transform the image");
   }
 
   //make pinata call
@@ -122,10 +98,9 @@ export const mintNFT3 = async(name, description, image) => {
       status: "Something went wrong while uploading your tokenURI.",
     };
   } else {
-    const tokenURI = pinataResponse.tokenURI
+    const tokenURI = pinataResponse.tokenURI;
     console.log(tokenURI);
     handleMint(tokenURI);
-    
 
     return {
       success: true,
@@ -135,137 +110,146 @@ export const mintNFT3 = async(name, description, image) => {
   }
 };
 
-
 async function handleMint(uri) {
   // if user is connected or has metamask logged in
   if (window.ethereum) {
-  // a way for ethers to connect to the blockchain 
+    // a way for ethers to connect to the blockchain
     const provider = new ethers.providers.Web3Provider(window.ethereum);
-    // sth that signs the transaction 
+    // sth that signs the transaction
     const signer = provider.getSigner();
-    //pinata token uri
-    //const tokenURI = pinataURI;
     // this is were the address is passed (ABI)
-    const contract = new ethers.Contract(
-     //SimpleNFTAddress,
-     //SimpleNFT.abi, 
-     beeTokenAddress,
-     phyiscalNFT.abi,
-      signer,
-        );
-  try {
-    console.log("this is the uri " + uri)
-    const response = await(await contract.mint(uri)).wait()
-    console.log('response: ', response)
-     } catch (err) {
-        console.log("error: ", err)
-      }
+    const contract = new ethers.Contract(beeTokenAddress, beeToken.abi, signer);
+    try {
+      console.log("this is the uri " + uri);
+      const response = await (await contract.mint(uri)).wait();
+      console.log("response: ", response);
+    } catch (err) {
+      console.log("error: ", err);
     }
+  }
 }
 
-export const listNFT = async(id, price) => {
-
+export const listNFT = async (id, price) => {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner();
 
-  const nft = new ethers.Contract(beeTokenAddress,phyiscalNFT.abi,signer)
+  const nft = new ethers.Contract(beeTokenAddress, beeToken.abi, signer);
 
-  const escrow = new ethers.Contract(phygitalEscrowAddress, phygitalEscrow.abi, signer)
+  const escrow = new ethers.Contract(
+    beeTokenEscrowAddress,
+    beeTokenEscrow.abi,
+    signer
+  );
 
-  // approve escrow contract      
-  const response2 = await(await nft.approve(phygitalEscrowAddress, id)).wait()
-  console.log('response: ', response2)
-  console.log('Hello?')
+  // approve escrow contract
+  const response2 = await (await nft.approve(beeTokenEscrowAddress, id)).wait();
+  console.log("response: ", response2);
+  console.log("Hello?");
 
-  const listingPrice = ethers.utils.parseEther(price.toString())
-  console.log('price: ', listingPrice);
-  
-  // list NFT with escrow - so another window opens at this point? 
+  const listingPrice = ethers.utils.parseEther(price.toString());
+  console.log("price: ", listingPrice);
+
+  // list NFT with escrow - so another window opens at this point?
   //const idHex = ethers.utils.hexlify(id);
   //const BigNumber = ethers.BigNumber;
   //const idBN = BigNumber.from(id);
-  await(await escrow.ListNFT(nft.address, id, listingPrice)).wait()
-  console.log('Done listing')
+  await (await escrow.listNFT(nft.address, id, listingPrice)).wait();
+  console.log("Done listing");
+};
 
-  }
-
-/*const p = ethers.utils.parseUnits('2')
-const a = ethers.utils.parseUnits('2')
-
-p.toString() // '2000000000000000000'
-a.toString() // '2000000000000000000' */
-
-
-
-
-export const cancelNFT = async(id) => {
-
+export const cancelNFTListing = async (id) => {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner();
-  const escrow = new ethers.Contract(phygitalEscrowAddress, phygitalEscrow.abi, signer)
-  // return ownership of NFT 
+  const escrow = new ethers.Contract(beeTokenEscrowAddress, beeTokenEscrow.abi, signer);
+  // return ownership of NFT
   //await(await escrow.reverseNftTransfer(id,  {gas: 1000000})).wait()
-  await(await escrow.reverseNftTransfer(id)).wait()
-  console.log('Done Reversing')
-}
+  await (await escrow.reverseNftTransfer(id)).wait();
+  console.log("Done Reversing");
+};
 
-
-export const cancelNFT2  = async(id) => {
+export const buyNFT = async (id, price) => {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner();
-  const gasPrice = await provider.getGasPrice();
-  const escrow = new ethers.Contract(phygitalEscrowAddress, phygitalEscrow.abi, signer)
-  const gasLimit = await signer.estimateGas(await escrow.reverseNftTransfer(id), { from: signer.getAddress() });
-  const tx = await escrow.reverseNftTransfer(id, {
-    gasLimit: gasLimit.mul(120).div(100),
-    gasPrice: gasPrice.mul(120).div(100),
-  });
-  await tx.wait();
-  console.log('Done Reversing');
-}
-
-
-export const buyNFT = async(id, price) => {
-
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const signer = provider.getSigner();
-  const escrow = new ethers.Contract(phygitalEscrowAddress, phygitalEscrow.abi, signer)
+  const escrow = new ethers.Contract(beeTokenEscrowAddress, beeTokenEscrow.abi, signer);
   // deposit eth
-  const price_parsed = ethers.utils.parseEther(price.toString())
-  await(await escrow.depositETH(id, {value: price_parsed})).wait()
-  console.log('Done Buying')
+  const price_parsed = ethers.utils.parseEther(price.toString());
+  console.log(id);
+  await (await escrow.depositETH(id, { value: price_parsed })).wait();
+  console.log("Done Buying");
+};
 
-
-}
-
-
-export const cancelNFTSale = async(id) => {
-
+export const cancelNFTSaleBeforeDelivery = async (id) => {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner();
-  const escrow = new ethers.Contract(phygitalEscrowAddress, phygitalEscrow.abi, signer)
-  // return ownership of NFT 
-  await(await escrow.cancelBeforeDelivery(id)).wait()
-  console.log('Done Canceling')
-}
+  const escrow = new ethers.Contract(beeTokenEscrowAddress, beeTokenEscrow.abi, signer);
+  // return ownership of NFT
+  //await(await escrow.cancelBeforeDelivery(id)).wait()
 
-export const initiateDelivery= async(id) => {
+  // return ownership of NFT
+  const tx = await escrow.cancelBeforeDelivery(id);
+  const gasLimit = 1000000; // set the gas limit value
+  await tx.wait({ gasLimit });
 
+  console.log("Done Canceling");
+};
+
+export const initiateDelivery = async (id) => {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner();
-  const escrow = new ethers.Contract(phygitalEscrowAddress, phygitalEscrow.abi, signer)
-  // return ownership of NFT 
-  await(await escrow.initiateDelivery(id)).wait()
-  console.log('Done Initiating')
-}
+  const escrow = new ethers.Contract(beeTokenEscrowAddress, beeTokenEscrow.abi, signer);
+  // return ownership of NFT
+  await (await escrow.initiateDelivery(id)).wait();
+  console.log("Done Initiating");
+};
 
-
-export const confirmNFTDelivery= async(id) => {
-
+export const confirmNFTDelivery = async (id) => {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner();
-  const escrow = new ethers.Contract(phygitalEscrowAddress, phygitalEscrow.abi, signer)
-  // return ownership of NFT 
-  await(await escrow.confirmDeliveryFinalizeSale(id)).wait()
-  console.log('Done Confirming')
-}
+  const escrow = new ethers.Contract(beeTokenEscrowAddress, beeTokenEscrow.abi, signer);
+  // return ownership of NFT
+  await (await escrow.confirmDeliveryFinalizeSale(id)).wait();
+  console.log("Done Confirming");
+};
+
+/*export const loadItemState = async (tokenId) => {
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const signer = provider.getSigner();
+  const listedNFT = new ethers.Contract(
+    beeTokenEscrowAddress,
+    beeTokenEscrow.abi,
+    signer
+  );*/
+
+export const loadItemState = async (tokenId) => {
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const signer = provider.getSigner();
+  const listedNFT = new ethers.Contract(
+    beeTokenEscrowAddress,
+    beeTokenEscrow.abi,
+    signer
+  );
+
+  // Mapping for item states
+  const itemStateMapping = {
+    0: "New Escrow",
+    1: "NFT Is For Sale",
+    2: "NFT Sale Cancelled",
+    3: "ETHs Deposited",
+    4: "Cancellation Before Delivery",
+    5: "Delivery Initiated",
+    6: "Delivered & Confirmed --> Done Deal",
+  };
+
+  const itemCount = await listedNFT.itemCount();
+  for (let i = 1; i <= itemCount; i++) {
+    const item = await listedNFT.items(i);
+    if (item.tokenId == tokenId) {
+      console.log(item.tokenId);
+      console.log(item.state);
+      console.log(item.sold);
+      // Convert the numeric state to its corresponding meaning
+      const itemState = itemStateMapping[item.state];
+      return itemState;
+    }
+  }
+};

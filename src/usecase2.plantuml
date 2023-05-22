@@ -1,0 +1,56 @@
+@startuml usecase2
+left to right direction
+skinparam packageStyle rectangle
+
+actor Owner as "Owner/Seller"
+actor Buyer as "Buyer"
+
+rectangle "Blockchain" as Blockchain
+rectangle "NFT Smart Contract" as NFTContract
+rectangle "Escrow Smart Contract" as EscrowContract
+
+rectangle "Physical Asset Trading System" {
+  rectangle "Tokenization\nof Physical Asset" as Tokenization
+  rectangle "Listing Physical\nNFT Asset" as Listing
+  rectangle "Purchase of\nPhysical NFT Asset" as Purchase
+  rectangle "Deliver Physical Asset" as Delivery
+  rectangle "Receive Physical Asset" as Receive
+  rectangle "Verify Physical Asset" as Verification
+  rectangle "Receive Physical NFT Ownership " as NFTOwnership
+  rectangle "Receive ETHs" as ETH
+
+  Owner --> Tokenization
+  Tokenization --> NFTContract : Mint Physical NFT
+
+  NFTContract --> Blockchain : Store Data on Blockchain
+
+  Owner --> Listing
+  Listing --> EscrowContract : Transfer Physical NFT
+
+  Buyer --> Purchase
+  Purchase --> EscrowContract : Transfer ETH
+
+  Owner --> Delivery
+
+  Buyer --> Receive
+
+  Buyer --> Verification
+
+  Verification --> EscrowContract : Confirm Delivery
+
+  Buyer --> NFTOwnership
+  
+  EscrowContract --> NFTOwnership : Transfer Ownership
+
+  Owner --> ETH
+
+  EscrowContract --> ETH : Transfer ETH 
+
+  NFTContract <|-- Blockchain
+
+  EscrowContract <|-- Blockchain
+}
+
+@enduml
+
+

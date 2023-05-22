@@ -1,0 +1,25 @@
+@startuml activity0
+|Owner|
+start
+:Tokenize Physical Asset into NFT;
+|Blockchain|
+:Store Physical NFT Asset Data;
+|Owner|
+if (Sell Physical NFT Asset?) then (yes)
+  :List Physical NFT Asset;
+else (no)
+  stop
+endif
+|Buyer|
+:Purchase Physical NFT Asset;
+|Owner|
+:Deliver Physical Asset;
+|Buyer|
+if (Verify Physical NFT Asset) then (success)
+  #palegreen:Verification Successful - Confirm Delivery;
+else (failure)
+  #pink:Verification Failed;
+  end
+endif
+stop
+@enduml

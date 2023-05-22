@@ -5,7 +5,7 @@ body {
   margin: 0;
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
   monospace;
-  overflow: hidden;
+  overflow: scroll;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   z-index:  -1;
@@ -167,7 +167,7 @@ header {
   display: inline-block;
 }
 
-#mintButton {
+#pressButton {
   border-radius: 20px;
   font-size: 14px;
   padding: 10px 20px;
@@ -261,4 +261,9 @@ textarea {
 
 .rounded {
   border-radius: 100px;
+}
+
+.small {
+  font-size: 10px;
+  color:rgb(50, 48, 48); 
 }

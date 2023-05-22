@@ -1,0 +1,36 @@
+@startuml test2
+left to right direction
+
+
+actor Owner
+actor Buyer
+
+rectangle DApp {
+  usecase "Fill out form (physical asset details)" as FillForm
+  usecase "Mint new physical NFT" as MintNFT
+  usecase "Deposit NFT" as DepositNFT  
+  usecase "Deposit ETH" as DepositETH
+  usecase "Initiate delivery" as InitiateDelivery
+  usecase "Scan NFC tag to confirm delivery" as ScanTag
+  usecase "Transfer NFT ownership" as TransferNFT
+  usecase "Transfer ETH ownership" as TransferETH
+}
+
+Owner --> FillForm
+FillForm --> DApp
+DApp --> MintNFT
+Owner --> DepositNFT
+
+Buyer --> DepositETH
+Owner --> InitiateDelivery
+Buyer --> ScanTag
+
+TransferETH --> Owner
+TransferNFT --> Buyer
+
+@enduml
+
+
+
+
+

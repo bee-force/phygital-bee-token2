@@ -1,0 +1,55 @@
+@startuml sequence0
+
+actor Owner
+actor Buyer
+
+participant "Physical Asset Trading Platform" as Platform
+
+participant Blockchain
+participant NFTSmartContract
+participant EscrowSmartContract
+
+participant "NFC Tag" as NFC
+
+title Physical Asset Trading Platform
+
+== Physical Asset Tokenization Process ==
+Owner -> Platform: Complete metadata-form for tokenization
+activate Platform
+Platform ->> NFTSmartContract: Mint custom NFT
+Platform ->> Blockchain: Store NFT metadata
+deactivate Platform
+NFTSmartContract -->> Owner: Return minted NFT
+
+== Sales Process ==
+Owner -> Platform: List NFT asset for sale
+activate Platform
+NFTSmartContract -->> Platform: Transfer NFT ownership
+Platform ->> EscrowSmartContract: Deposit NFT into Escrow
+deactivate Platform
+Buyer -> Platform: Select NFT & deposit ETH as payment
+activate Platform
+Platform ->> EscrowSmartContract: Deposit ETH into Escrow
+deactivate Platform
+activate Owner
+Owner ->> Buyer: Transfer physical asset
+deactivate Owner
+activate Platform
+Platform -> EscrowSmartContract: Confirm delivery
+deactivate Platform
+Buyer -> NFC: Scan NFC tag of physical asset
+NFC -->> Platform: Verify physical NFT asset
+activate Platform
+Platform -> EscrowSmartContract: Confirm successful receipt
+deactivate Platform
+
+activate EscrowSmartContract
+EscrowSmartContract -->> Buyer: Transfer NFT ownership
+EscrowSmartContract -->> Owner: Transfer ETH
+deactivate EscrowSmartContract
+
+@enduml
+
+
+
+

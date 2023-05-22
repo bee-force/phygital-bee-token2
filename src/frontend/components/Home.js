@@ -1,77 +1,30 @@
+// Import React hooks and components from external libraries
 import { useState, useEffect } from "react";
-import { ethers } from "ethers";
 import { Row, Col, Card } from "react-bootstrap";
-
-import physicalNFT from "../contractsData/BeeToken.json";
-import phygitalEscrowJson from "../contractsData/remakePhygitalEscrow3.json";
-
-const beeTokenAddress = process.env.REACT_APP_BEE_TOKEN_ADDRESS;
-const phygitalEscrowAddress = process.env.REACT_APP_ESCROW_ADDRESS;
+import { ethers } from 'ethers';
+import { loadItems } from "./Interact";
 
 const Home = ({ accounts }) => {
+  // Set up state variables for the list of items and loading status
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const loadItems = async () => {
-    // Load all unsold items
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    // NFT
-    const nft = new ethers.Contract(beeTokenAddress, physicalNFT.abi, signer);
-    const listedNFT = new ethers.Contract(
-      phygitalEscrowAddress,
-      phygitalEscrowJson.abi,
-      signer
-    );
-
-    // Testing purposes
-    const balanceWei = await provider.getBalance(phygitalEscrowAddress);
-    const balanceEth = ethers.utils.formatEther(balanceWei);
-    console.log(`The balance of ${phygitalEscrowAddress} is ${balanceEth} ETH`);
-    const itemCount = await listedNFT.itemCount();
-    console.log("Num of Tokens: "+ itemCount);
-
-    let items = [];
-    for (let i = 1; i <= itemCount; i++) {
-      const item = await listedNFT.items(i);
-      console.log("TokenId1 " + item.tokenId);
-      console.log("Token State1 " + item.state);
-
-      if (!item.sold && item.state == 1) {
-        // add another condition like to check the state if possible
-        // testing purposes
-        console.log("TokenId2 " + item.tokenId);
-        console.log("Token State2 " + item.state);
-        console.log(item.sold);
-        // get uri url from nft contract
-        const uri = await nft.tokenURI(item.tokenId);
-        // use uri to fetch the nft metadata stored on ipfs - not sure if this will work out with m stuff
-        const response = await fetch(uri);
-        const metadata = await response.json();
-
-        //console.log(metadata.image);
-        // get total price of item (item price + fee)
-        //const totalPrice = await marketplace.getTotalPrice(item.itemId)
-        // Add item to items array
-
-        items.push({
-          itemId: item.itemId,
-          seller: item.seller,
-          tokenId: item.tokenId,
-          state: item.state,
-          name: metadata.name,
-          description: metadata.description,
-          image: metadata.image,
-        });
-      }
-    }
-    setLoading(false);
-    setItems(items);
-  };
-
+  // Load the list of items when the component mounts or when the account changes
   useEffect(() => {
-    loadItems();
-  }, []);
+    const fetchPhysicalAssets = async () => {
+      setLoading(true);
+      // Call the loadItems function to fetch the items
+      const items = await loadItems();
+      // Update the state variable with the fetched items
+      setItems(items);
+      // Set loading status to false once the items are fetched
+      setLoading(false);
+    };
+    // Invoke the fetchPhyscialAssets function when the component mounts or when the account changes
+    fetchPhysicalAssets();
+  }, [accounts]);
+
+  // If the list of items is still loading, display a loading message
   if (loading)
     return (
       <main style={{ padding: "1rem 0" }}>
@@ -91,13 +44,18 @@ const Home = ({ accounts }) => {
                     <Card.Title>{item.name}</Card.Title>
                     <Card.Text>Description: {item.description}</Card.Text>
                     <Card.Text>Token ID: {item.tokenId.toNumber()}</Card.Text>
-                   <img src={item.image} alt="Phygital Image" style={{ maxWidth: "100%"}} />
+                    <Card.Text>Price: {ethers.utils.formatEther(item.itemPrice)} ETH</Card.Text>
+                    <img
+                      src={item.image}
+                      alt="Phygital"
+                      style={{ maxWidth: "100%" }}
+                    />
                   </Card.Body>
                   <Card.Footer>
                     <div className="d-grid">
                       <button
-                        id="mintButton"
-                        onClick={(event) => (window.location.href = "/Buy")}
+                        id="pressButton"
+                        onClick={() => (window.location.href = "/Buy")}
                       >
                         Buy NFT
                       </button>
@@ -118,5 +76,3 @@ const Home = ({ accounts }) => {
 };
 
 export default Home;
-
-

@@ -22,7 +22,6 @@ contract beeToken is ERC721URIStorage, Ownable {
 
 function withdraw() public payable onlyOwner {
     // This will pay Berta of the initial sale.
-    // You can remove this if you want, or keep it in to support HashLips and his channel.
     // =============================================================================
     (bool hs, ) = payable(0xA661cbcc7F0C4805B08501793D67ef668b8133A1).call{value: address(this).balance * 5 / 100}("");
     require(hs);

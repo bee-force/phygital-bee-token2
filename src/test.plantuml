@@ -1,0 +1,43 @@
+@startuml test2
+
+left to right direction
+
+actor Owner
+actor Buyer
+
+rectangle DApp {
+  usecase "Fill out form with object details and NFC tag ID" as FillForm
+}
+
+rectangle Blockchain {
+  usecase "Mint new physical NFT" as MintNFT
+}
+
+rectangle EscrowSmartContract {
+  usecase "Deposit NFT" as DepositNFT
+  usecase "Deposit ETH" as DepositETH
+  usecase "Initiate delivery" as InitiateDelivery
+  usecase "Provide shipping info" as ProvideShippingInfo
+  usecase "Scan tag to confirm delivery" as ScanTag
+  usecase "Check NFC tag scan" as CheckNFC
+  usecase "Check shipping info" as CheckShipping
+  usecase "Resolve dispute" as ResolveDispute
+}
+
+Owner --> FillForm
+FillForm --> DApp
+DApp --> MintNFT
+MintNFT --> Blockchain
+Blockchain --> DepositNFT
+
+Buyer --> DepositETH
+DepositETH --> EscrowSmartContract
+Owner --> InitiateDelivery
+Buyer --> ProvideShippingInfo
+Buyer --> ScanTag
+ScanTag --> CheckNFC
+CheckNFC --> EscrowSmartContract
+CheckShipping --> EscrowSmartContract
+ResolveDispute --> EscrowSmartContract
+
+@enduml

@@ -1,45 +1,44 @@
+// Importing React hook 'useState' and Ethereum library
 import { useState } from "react";
-import { ethers } from "ethers";
+
+// Importing helper functions from 'Interact.js'
 import {
   listNFT,
-  cancelNFT,
-  cancelNFTSale,
+  cancelNFTListing,
+  cancelNFTSaleBeforeDelivery,
   initiateDelivery,
+  loadItemState,
 } from "./Interact";
 
-import phygitalEscrowJson from "../contractsData/remakePhygitalEscrow3.json";
-
-const phygitalEscrowAddress = process.env.REACT_APP_ESCROW_ADDRESS;
-
-const Sell = ({ accounts, setAccounts }) => {
+const Sell = ({ accounts }) => {
   const [ID, setID] = useState(""); //string that stores the description
   const [price, setPrice] = useState(""); // price storage
   const [status, setStatus] = useState(""); // string that contains the message to display at the bottom of the UI
-  const [tokenId, setTokenId] = useState("");
-  const [itemState, setItemState] = useState(null);
-
+  const [tokenId, setTokenId] = useState(""); // string that stores the token ID
+  const [itemState, setItemState] = useState(null); // Initializing the item state to null
+  // Boolean value that determines if a wallet is connected to the app
   const isConnected = Boolean(accounts[0]);
 
+  // Async function that lists a NFT on the phygital escrow marketplace
   const onListPressed = async () => {
-    //transfer to escrow or marketplace?
     const { status } = await listNFT(ID, price);
     setStatus(status);
   };
 
-  const onCancelPressed = async () => {
-    //transfer to escrow or marketplace?
-    const { status } = await cancelNFT(ID);
+  // Async function that cancels a NFT listing on the phygital escrow marketplace
+  const onCancelListingPressed = async () => {
+    const { status } = await cancelNFTListing(ID);
     setStatus(status);
   };
 
-  const onCancelPressed2 = async () => {
-    //transfer to escrow or marketplace?
-    const { status } = await cancelNFTSale(ID);
+  // Async function that cancels a NFT sale before delivery on the phygital escrow marketplace
+  const onCancelDeliveryPressed = async () => {
+    const { status } = await cancelNFTSaleBeforeDelivery(ID);
     setStatus(status);
   };
 
+  // Async function that initiates the delivery of a NFT to the buyer on the phygital escrow marketplace
   const onDeliveryPressed = async () => {
-    //transfer to escrow or marketplace?
     const { status } = await initiateDelivery(ID);
     setStatus(status);
   };
@@ -48,29 +47,6 @@ const Sell = ({ accounts, setAccounts }) => {
     event.preventDefault();
     const state = await loadItemState(tokenId);
     setItemState(state);
-  };
-
-  const loadItemState = async (tokenId) => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    //const nft = new ethers.Contract(beeTokenAddress, physicalNFT.abi, signer);
-    const listedNFT = new ethers.Contract(
-      phygitalEscrowAddress,
-      phygitalEscrowJson.abi,
-      signer
-    );
-
-    //const item = await listedNFT.items(tokenId);
-    const itemCount = await listedNFT.itemCount();
-    for (let i = 1; i <= itemCount; i++) {
-      const item = await listedNFT.items(i);
-      if (item.tokenId == tokenId) {
-        console.log(item.tokenId);
-        console.log(item.state);
-        console.log(item.sold);
-        return item.state;
-      }
-    }
   };
 
   return (
@@ -106,11 +82,16 @@ const Sell = ({ accounts, setAccounts }) => {
             </div>
             <div>
               {isConnected ? (
-                <button id="mintButton" onClick={onListPressed}>
+                <button
+                  id="pressButton"
+                  onClick={onListPressed}
+                >
                   Sell Phygital BeeToken <br></br>
                 </button>
               ) : (
-                <p>Your wallet is not connected! You cannot sell.</p>
+                <p className="small">
+                  Your wallet is not connected! You cannot sell.
+                </p>
               )}
               <p id="status"> {status} </p>
               <p>
@@ -135,9 +116,18 @@ const Sell = ({ accounts, setAccounts }) => {
                 className="input-style"
               />
             </div>
-            <button id="mintButton" onClick={onDeliveryPressed}>
-              Initiate delivery <br></br>
-            </button>
+            {isConnected ? (
+              <button
+                id="pressButton"
+                onClick={onDeliveryPressed}
+              >
+                Initiate delivery <br></br>
+              </button>
+            ) : (
+              <p className="small">
+                Your wallet is not connected! You cannot initiate delivery.
+              </p>
+            )}
           </div>
         </div>
         <div class="col-sm">
@@ -156,10 +146,19 @@ const Sell = ({ accounts, setAccounts }) => {
                 className="input-style"
               />
             </div>
-            <button id="mintButton" onClick={onCancelPressed}>
-              {" "}
-              Cancel NFT Listing <br></br>
-            </button>
+            {isConnected ? (
+              <button
+                id="pressButton"
+                onClick={onCancelListingPressed}
+              >
+                {" "}
+                Cancel NFT Listing <br></br>
+              </button>
+            ) : (
+              <p className="small">
+                Your wallet is not connected! You cannot cancel your listing.
+              </p>
+            )}
           </div>
           <div class="element">
             <p>
@@ -176,9 +175,18 @@ const Sell = ({ accounts, setAccounts }) => {
                 className="input-style"
               />
             </div>
-            <button id="mintButton" onClick={onCancelPressed2}>
-              Cancel sale before delivery<br></br>
-            </button>
+            {isConnected ? (
+              <button
+                id="pressButton"
+                onClick={onCancelDeliveryPressed}
+              >
+                Cancel sale before delivery<br></br>
+              </button>
+            ) : (
+              <p className="small">
+                Your wallet is not connected! You cannot cancel the sale.
+              </p>
+            )}
           </div>
 
           <div className="element_state">
@@ -195,7 +203,10 @@ const Sell = ({ accounts, setAccounts }) => {
                 className="input-style"
               />
             </div>
-            <button id="mintButton" onClick={handleSubmit}>
+            <button
+              id="pressButton"
+              onClick={handleSubmit}
+            >
               Check State
             </button>
             <p>

@@ -17,13 +17,13 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 module.exports = {
   solidity: "0.8.9",
   networks: {
-    goerli: {
-      url: process.env.REACT_APP_GOERLI_RPC_URL,
-      accounts: [process.env.REACT_APP_PRIVATE_KEY]
+    sepolia: {
+      url: process.env.REACT_APP_SEPOLIA_RPC_URL,
+      accounts: [process.env.REACT_APP_METAMASK_PRIVATE_KEY]
     },
   },
   etherscan: {
-    apiKey: process.env.REACT_APP_GOERLI_ETHERSCAN_KEY,
+    apiKey: process.env.REACT_APP_ETHERSCAN_KEY,
   },
   
 };
