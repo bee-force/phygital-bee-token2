@@ -34,6 +34,7 @@ export const loadItems = async () => {
     const item = await listedNFT.items(i);
     console.log("TokenId1 " + item.tokenId);
     console.log("Token State1 " + item.state);
+    console.log("Token Price" + item.price)
 
     if (!item.sold && item.state === 1) {
       // add another condition like to check the state if possible
@@ -202,12 +203,12 @@ export const initiateDelivery = async (id) => {
   console.log("Done Initiating");
 };
 
-export const confirmNFTDelivery = async (id) => {
+export const confirmNFTDelivery = async (id, options) => {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner();
   const escrow = new ethers.Contract(beeTokenEscrowAddress, beeTokenEscrow.abi, signer);
   // return ownership of NFT
-  await (await escrow.confirmDeliveryFinalizeSale(id)).wait();
+  await (await escrow.confirmDeliveryFinalizeSale(id, options)).wait();
   console.log("Done Confirming");
 };
 
