@@ -9,7 +9,7 @@ import beeTokenEscrow from "../contractsData/beeTokenEscrow.json";
 // const beeTokenAddress = process.env.REACT_APP_BEE_TOKEN_ADDRESS;
 // const beeTokenEscrowAddress = process.env.REACT_APP_ESCROW_ADDRESS;
 const beeTokenAddress = '0x5d73B90BE815e3DaB76436bc1ff268Da382FCC2e'
-const beeTokenEscrowAddress= '0x4D5C42d6beB8CcA4F014a1249074DB70303B3e8b'
+const beeTokenEscrowAddress= '0x322356bD1B404Ff3Ef3f76f5eE53c72772d21Fb0'
 
 export const loadItems = async () => {
   // Connect to the Web3 provider using the Ethereum wallet in the user's browser
@@ -203,12 +203,12 @@ export const initiateDelivery = async (id) => {
   console.log("Done Initiating");
 };
 
-export const confirmNFTDelivery = async (id, options) => {
+export const confirmNFTDelivery = async (id) => {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner();
   const escrow = new ethers.Contract(beeTokenEscrowAddress, beeTokenEscrow.abi, signer);
   // return ownership of NFT
-  await (await escrow.confirmDeliveryFinalizeSale(id, options)).wait();
+  await (await escrow.confirmDeliveryFinalizeSale(id)).wait();
   console.log("Done Confirming");
 };
 

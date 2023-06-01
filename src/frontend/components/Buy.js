@@ -35,7 +35,7 @@ const Buy = ({ accounts }) => {
   // Async function that handles the confirm delivery action
   const onConfirmPressed = async () => {
     // Calling the confirmNFTDelivery function from 'Interact.js' with ID
-    const { status } = await confirmNFTDelivery(ID, {gasLimit: 300000});
+    const { status } = await confirmNFTDelivery(ID);
     // Updating the status message
     setStatus(status);
   };

@@ -11,7 +11,7 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "hardhat/console.sol";
 
 // Create a new contract that uses the ReentrancyGuard library.
-contract beeTokenEscrow is ReentrancyGuard {
+contract beebeeTokenEscrow is ReentrancyGuard {
     // Declare an enumeration to keep track of the progress of each escrow transaction.
     enum ItemState {
         NewEscrow,
@@ -115,13 +115,6 @@ contract beeTokenEscrow is ReentrancyGuard {
         );
         // Set the item state to CancelNft
         setItemStateByTokenId(_tokenId, ItemState.CancelNft);
-
-        // Transfer the NFT back to the seller
-        IERC721(items[_tokenId].nft).safeTransferFrom(
-            address(this),
-            seller,
-            items[_tokenId].tokenId
-        );
     }
 
     // Cancel the sale before delivery
@@ -161,37 +154,21 @@ contract beeTokenEscrow is ReentrancyGuard {
     }
 
     // Confirm delivery of an item and finalize the sale
-   // Confirm delivery of an item and finalize the sale
-function confirmDeliveryFinalizeSale(uint _tokenId) public onlyBuyer {
-    // Get a reference to the item
-    Item storage item = items[_tokenId];
-    // Set the item state to Delivered
-    item.state = ItemState.Delivered;
-    // Get the total price for the item
-    uint _totalPrice = getTotalPrice(_tokenId);
-    
-    // Calculate the market fee
-    uint _fee = (_totalPrice * feePercent) / 100;
-    uint _sellerAmount = _totalPrice - _fee;
-    
-    // If the market fee is negative or zero, set it to 0.01% of the item price
-    if (_fee <= 0) {
-        _fee = (_totalPrice * 1) / 10000; // 0.01% of the item price
-        _sellerAmount = _totalPrice - _fee;
+    function confirmDeliveryFinalizeSale(uint _tokenId) public onlyBuyer {
+        // Get a reference to the item
+        Item storage item = items[_tokenId];
+        // Set the item state to Delivered
+        item.state = ItemState.Delivered;
+        // Get the total price for the item
+        uint _totalPrice = getTotalPrice(_tokenId);
+        // Transfer the NFT to the buyer
+        IERC721(item.nft).safeTransferFrom(address(this), buyer, item.tokenId);
+        // Transfer the item price to the seller
+        (bool feeSuccess, ) = feeAccount.call{value: _totalPrice - item.price}(
+            ""
+        );
+        require(feeSuccess, "Failed to send market fee");
     }
-
-    // Transfer the NFT to the buyer
-    IERC721(item.nft).safeTransferFrom(address(this), buyer, item.tokenId);
-    
-    // Transfer the seller's amount to the seller
-    (bool sellerSuccess, ) = item.seller.call{value: _sellerAmount}("");
-    require(sellerSuccess, "Failed to send seller amount");
-    
-    // Transfer the market fee to the feeAccount
-    (bool feeSuccess, ) = feeAccount.call{value: _fee}("");
-    require(feeSuccess, "Failed to send market fee");
-}
-
 
     function getTotalPrice(uint _tokenId) public view returns (uint) {
         return ((items[_tokenId].price * (100 + feePercent)) / 100);
