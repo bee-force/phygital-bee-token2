@@ -1,0 +1,54 @@
+@startuml class
+title UML Class Diagram - Escrow Contract
+
+interface IERC721 {
+    + safeTransferFrom(from: address, to: address, tokenId: uint256) external
+    + transferFrom(from: address, to: address, tokenId: uint256) external
+}
+
+class beeTokenEscrow {
+    - feeAccount: payable address
+    - feePercent: uint
+    - itemCount: uint
+    - seller: payable address
+    - buyer: payable address
+    - nft_hardcode: IERC721
+    - items: mapping(uint => Item)
+
+    + beeTokenEscrow()
+    + listNFT(_nft: IERC721, _tokenId: uint256, _price: uint) external
+    + setItemStateByTokenId(tokenId: uint256, newState: ItemState) public
+    + reverseNftTransfer(_tokenId: uint) public
+    + cancelBeforeDelivery(_tokenId: uint) public
+    + depositETH(_tokenId: uint) public payable
+    + initiateDelivery(_tokenId: uint) public
+    + confirmDeliveryFinalizeSale(_tokenId: uint) public
+    + getTotalPrice(_tokenId: uint) public view returns (uint)
+}
+
+enum ItemState {
+    NewEscrow,
+    NftDeposited,
+    CancelNft,
+    EthDeposited,
+    CanceledBeforeDelivery,
+    DeliveryInitiated,
+    Delivered
+}
+
+class Item {
+    - itemId: uint
+    - tokenId: uint256
+    - nft: IERC721
+    - price: uint
+    - seller: payable address
+    - sold: bool
+    - state: ItemState
+}
+
+beeTokenEscrow --> IERC721 : uses
+beeTokenEscrow "1" *-- "1..*" Item : contains
+beeTokenEscrow --> ItemState
+
+@enduml
+
