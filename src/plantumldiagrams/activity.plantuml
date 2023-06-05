@@ -1,4 +1,7 @@
 @startuml activity0
+
+title UML Activity Diagram - Physical Asset Trading Platform
+
 |Owner|
 start
 :Tokenize Physical Asset into NFT;
