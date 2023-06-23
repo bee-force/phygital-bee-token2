@@ -6,26 +6,26 @@ actor Owner as "Owner/Seller"
 actor Buyer as "Buyer"
 
 rectangle "Blockchain" as Blockchain
-rectangle "NFT Smart Contract" as NFTContract
-rectangle "Escrow Smart Contract" as EscrowContract
+rectangle "NFT smart contract" as NFTContract
+rectangle "Escrow smart contract" as EscrowContract
 
 rectangle "Physical Asset Trading System" {
-  rectangle "Tokenization\nof Physical Asset" as Tokenization
-  rectangle "Listing Physical\nNFT Asset" as Listing
-  rectangle "Purchase of\nPhysical NFT Asset" as Purchase
-  rectangle "Deliver Physical Asset" as Delivery
-  rectangle "Receive Physical Asset" as Receive
-  rectangle "Verify Physical Asset" as Verification
-  rectangle "Receive Physical NFT Ownership " as NFTOwnership
-  rectangle "Receive ETHs" as ETH
+  rectangle "UC1: Tokenization\nof physical asset" as Tokenization
+  rectangle "UC2: Listing physical\nNFT asset" as Listing
+  rectangle "UC3: Purchase of\nphysical NFT asset" as Purchase
+  rectangle "UC4: Deliver physical asset" as Delivery
+  rectangle "UC5: Receive physical asset" as Receive
+  rectangle "UC6: Verify physical asset" as Verification
+  rectangle "UC7: Receive physical NFT ownership " as NFTOwnership
+  rectangle "UC8: Receive ETHs" as ETH
 
   Owner --> Tokenization
-  Tokenization --> NFTContract : Mint Physical NFT
+  Tokenization --> NFTContract : Mint physical NFT
 
-  NFTContract --> Blockchain : Store Data on Blockchain
+  NFTContract --> Blockchain : Store data on blockchain
 
   Owner --> Listing
-  Listing --> EscrowContract : Transfer Physical NFT
+  Listing --> EscrowContract : Transfer physical NFT
 
   Buyer --> Purchase
   Purchase --> EscrowContract : Transfer ETH
@@ -36,19 +36,19 @@ rectangle "Physical Asset Trading System" {
 
   Buyer --> Verification
 
-  Verification --> EscrowContract : Confirm Delivery
+  Verification --> EscrowContract : Confirm delivery
 
   Buyer --> NFTOwnership
   
-  EscrowContract --> NFTOwnership : Transfer Ownership
+  EscrowContract --> NFTOwnership : Transfer ownership
 
   Owner --> ETH
 
   EscrowContract --> ETH : Transfer ETH 
 
-  NFTContract <|-- Blockchain
+  NFTContract --|> Blockchain
 
-  EscrowContract <|-- Blockchain
+  EscrowContract --|> Blockchain
 }
 
 @enduml

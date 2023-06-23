@@ -8,19 +8,19 @@ start
 |Blockchain|
 :Store Physical NFT Asset Data;
 |Owner|
-if (Sell Physical NFT Asset?) then (yes)
+if () then ([sell])
   :List Physical NFT Asset;
-else (no)
-  stop
+else ([other])
+  end
 endif
 |Buyer|
 :Purchase Physical NFT Asset;
 |Owner|
 :Deliver Physical Asset;
 |Buyer|
-if (Verify Physical NFT Asset) then (success)
+if () then ([success])
   #palegreen:Verification Successful - Confirm Delivery;
-else (failure)
+else ([failure])
   #pink:Verification Failed;
   end
 endif

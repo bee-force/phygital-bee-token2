@@ -68,7 +68,7 @@ const Home = ({ accounts }) => {
         </div>
       ) : (
         <main style={{ padding: "1rem 0" }}>
-          <h2>No listed assets avaiable.</h2>
+          <h2>No listed assets available.</h2>
         </main>
       )}
     </div>

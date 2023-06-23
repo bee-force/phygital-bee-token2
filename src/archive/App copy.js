@@ -3,11 +3,11 @@ import {
     Routes,
     Route
   } from "react-router-dom";
-  import Navbar from './NavBar.js';
-  import Home from './Home.js';
-  import Mint from './Mint.js';
-  import Sell from './Sell.js';
-  import Buy from './Buy.js';
+  import Navbar from '../frontend/components/NavBar.js';
+  import Home from '../frontend/components/Home.js';
+  import Mint from '../frontend/components/Mint.js';
+  import Sell from '../frontend/components/Sell.js';
+  import Buy from '../frontend/components/Buy.js';
   import NFCChipValidation from './NFCChipValidation.js'
   import { useState } from 'react';
   
