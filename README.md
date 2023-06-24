@@ -1,9 +1,12 @@
-# To Dos
+# Phygital BeeToken dApp
 
-1. States have been added to the Item Struct, maybe undo this and emit a state after every function, to be able to drop items if there are not listed anylonger!! 
+Phygital BeeToken dApp is a prototype for a decentralized trading platform that enables users to tokenize and trade physical assets without intermediaries. This project utilizes React and Node.js for frontend development, Ethers.js for blockchain communication, and Solidity for smart contracts. The prototype is built on the Ethereum testnet blockchain, documenting the provenance and ownership of the assets.
 
-2. Step after buying the nft --> how does the owner know it was sold & how does he know the address to sent it to
+# Features
 
-3. After Minting how do you know the ID number? --> Etherscan
+Tokenization: Users can easily tokenize any physical asset by providing comprehensive information through a user-friendly form within the web-accessible application.
 
-4. Clean Code!!! Make Interact easier to read, maybe take out some functions out of sell & buy & so on
+Minting: The NFT smart contract accurately mints the physical NFT and securely stores the associated data on the Ethereum testnet blockchain.
+Escrow System: Buyers can deposit the agreed-upon amount of ETH into the escrow smart contract, ensuring secure and transparent payment for the physical NFT asset.
+
+Trading Platform: Users can buy and sell tokenized physical assets directly on the Phygital BeeToken Dapp, eliminating the need for intermediaries.
