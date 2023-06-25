@@ -41,9 +41,7 @@ The following dependencies are required for the project:
     "react-router": "^6.8.1",
     "react-router-dom": "^6.10.0",
     "react-scripts": "5.0.1",
-    "react-scroll": "^
-
-1.8.9",
+    "react-scroll": "^1.8.9",
     "web-vitals": "^2.1.4"
 }
 ```
