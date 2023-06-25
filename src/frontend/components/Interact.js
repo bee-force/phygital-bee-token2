@@ -6,10 +6,8 @@ import beeToken from "../contractsData/beeToken.json";
 import beeTokenEscrow from "../contractsData/beeTokenEscrow.json";
 
 // Get the BeeToken and BeeToken Escrow smart contract addresses from environment variables
-// const beeTokenAddress = process.env.REACT_APP_BEE_TOKEN_ADDRESS;
-// const beeTokenEscrowAddress = process.env.REACT_APP_ESCROW_ADDRESS;
-const beeTokenAddress = '0x5d73B90BE815e3DaB76436bc1ff268Da382FCC2e'
-const beeTokenEscrowAddress= '0x322356bD1B404Ff3Ef3f76f5eE53c72772d21Fb0'
+const beeTokenAddress = process.env.REACT_APP_BEE_TOKEN_ADDRESS;
+const beeTokenEscrowAddress = process.env.REACT_APP_ESCROW_ADDRESS;
 
 export const loadItems = async () => {
   // Connect to the Web3 provider using the Ethereum wallet in the user's browser
