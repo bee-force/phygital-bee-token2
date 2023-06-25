@@ -5,8 +5,7 @@ import React, { useState } from "react";
 // Importing the BeeToken contract ABI
 import phygitalBeeToken from "../contractsData/beeToken.json"; 
 // Storing the BeeToken contract address
-// const beeTokenAddress = process.env.REACT_APP_BEE_TOKEN_ADDRESS; 
-const beeTokenAddress = '0x5d73B90BE815e3DaB76436bc1ff268Da382FCC2e'
+const beeTokenAddress = process.env.REACT_APP_BEE_TOKEN_ADDRESS;
 
 const NFCChipVerification = ({ accounts }) => {
   // State variable to store the metadata of the Phygital BeeToken
