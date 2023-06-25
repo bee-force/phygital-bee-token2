@@ -3,10 +3,8 @@
 import axios from 'axios';
 
 // API key and secret for Pinata
-const key = 'ab09d0e7494f1c2e6936';
-const secret = 'e427838f911f429406cd14004541ea9184db3a6302786154b8bfef985ad44186';
-// const pinataKey = process.env.REACT_APP_PINATA_KEY;
-// const pinataSecret = process.env.REACT_APP_PINATA_SECRET;
+const pinataKey = process.env.REACT_APP_PINATA_KEY;
+const pinataSecret = process.env.REACT_APP_PINATA_SECRET;
 
 // Options for pinning metadata to Pinata
 const pinataOptions = {
