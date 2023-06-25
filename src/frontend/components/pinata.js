@@ -1,3 +1,4 @@
+// IPFS component
 // Importing the axios library
 import axios from 'axios';
 
