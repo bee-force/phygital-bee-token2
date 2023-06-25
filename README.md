@@ -56,8 +56,4 @@ The project includes a hardhat configuration file (`hardhat.config.js`) for mana
 
 Contributions to Phygital BeeToken dApp are welcome! If you encounter any issues or have suggestions for improvements, feel free to submit a pull request.
 
-## License
-
-This project is licensed under the [MIT License](LICENSE).
-
 ---
