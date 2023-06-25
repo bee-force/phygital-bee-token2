@@ -14,7 +14,7 @@ Phygital BeeToken Dapp is a prototype for a decentralized trading platform that 
 
 To set up the project locally and explore the Phygital BeeToken Dapp, follow these steps:
 
-1. Clone the repository: `git clone [https://github.com/bee-force/phygital-bee-token2]`
+1. Clone the repository: `git clone https://github.com/bee-force/phygital-bee-token2.git`
 2. Install dependencies: `npm install` & at this step, ensure that all dependencies are installed.
 3. Configure environment variables: Create a `.env` file in the project root directory and provide the necessary environment variables for blockchain connection and other configurations (for Metamask, Etherscan, Testnet Sepolia, and Infura API).
 4. Run the frontend: `npm start`
